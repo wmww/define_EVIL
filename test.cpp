@@ -7,7 +7,10 @@ int main()
 	#define XYZW xyzw
 	TEST_CASE_MACRO(EXPAND_AND_CALL(TO_STRING, XYZW), "xyzw");
 	TEST_CASE_MACRO(CHECK_IF_THING(a_thing), A_THING);
+	TEST_CASE_MACRO(CHECK_IF_THING("abc"), A_THING);
+	#define EMPTY_MACRO
 	TEST_CASE_MACRO(CHECK_IF_THING(), NOTHING);
+	TEST_CASE_MACRO(CHECK_IF_THING(EMPTY_MACRO), NOTHING);
 	std::cout << std::endl;
 	
 	std::cout << "meta tests:" << std::endl;

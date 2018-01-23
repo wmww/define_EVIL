@@ -6,6 +6,9 @@
 // convert input to string literal, can be used with EXPAND_AND_CALL
 #define TO_STRING(a) #a
 
+// returns the first argument
+#define GET_FIRST_ARG(first, ...) first
+
 // expands the arguments and then call macro with the expanded arguments
 #define EXPAND_AND_CALL(macro, ...) macro(__VA_ARGS__)
 
@@ -13,9 +16,9 @@
 // usage: CHECK_IF_THING()					-> NOTHING
 // a common way to use is to make two macros (ex. EXAMPLE_A_THING and EXAMPLE_NOTHING) and concat your prefix with the
 // result of this macro, so you can do different things depending on the thingyness
-#define _CHECK_IF_THING_A dummy, NOTHING
+#define _CHECK_IF_THING_A() dummy, NOTHING
 #define _CHECK_IF_THING_B(a, b, ...) b
-#define CHECK_IF_THING(a) EXPAND_AND_CALL(_CHECK_IF_THING_B, _CHECK_IF_THING##a##_A, A_THING)
+#define CHECK_IF_THING(a) EXPAND_AND_CALL(_CHECK_IF_THING_B, _CHECK_IF_THING_A a (), A_THING)
 
 // Tests
 
