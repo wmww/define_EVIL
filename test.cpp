@@ -3,6 +3,19 @@
 
 int main()
 {
+	std::cout << "general utils:" << std::endl;
+	#define XYZW xyzw
+	TEST_CASE_MACRO(EXPAND_AND_CALL(TO_STRING, XYZW), "xyzw");
+	TEST_CASE_MACRO(CHECK_IF_THING(a_thing), A_THING);
+	TEST_CASE_MACRO(CHECK_IF_THING(), NOTHING);
+	std::cout << std::endl;
+	
+	std::cout << "meta tests:" << std::endl;
 	TEST_CASE(1 + 2, 3);
+	TEST_CASE("foo", "foo");
+	TEST_CASE("this is fine", "failure");
+	TEST_CASE_MACRO(TO_STRING(abc), "abc");
+	std::cout << std::endl;
+	
 	return 0;
 }
