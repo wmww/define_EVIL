@@ -6,3 +6,6 @@ test: test.cpp
 
 dump: scratchpad.cpp
 	g++ -std=c++11 -E scratchpad.cpp
+
+autogen: auto_gen.sh
+	./auto_gen.sh > auto_gen.h
