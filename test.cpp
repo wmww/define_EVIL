@@ -5,9 +5,13 @@
 
 int main()
 {
+	std::cout << std::endl;
+	
 	std::cout << "general utils:" << std::endl;
 	#define XYZW xyzw
-	TEST_CASE_MACRO(EXPAND_AND_CALL(TO_STRING, XYZW), "xyzw");
+	#define xyzw_a foo
+	TEST_CASE_MACRO(EXPAND_CALL(TO_STRING, XYZW), "xyzw");
+	TEST_CASE_MACRO(EXPAND_CAT(XYZW, _a), foo);
 	std::cout << std::endl;
 	
 	std::cout << "REMOVE_COMMAS:" << std::endl;

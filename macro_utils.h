@@ -3,14 +3,18 @@
 
 /// General Utils
 
-// convert input to string literal, can be used with EXPAND_AND_CALL
+// convert input to string literal, can be used with EXPAND_CALL
 #define TO_STRING(a) #a
 
+// expands the arguments and concatinates them
+#define EXPAND_CAT(a, b) _EXPAND_CAT(a, b)
+#define _EXPAND_CAT(a, b) a##b
+
 // returns the first argument
-#define GET_FIRST_ARG(first, ...) first
+// #define GET_FIRST_ARG(first, ...) first
 
 // expands the arguments and then call macro with the expanded arguments
-#define EXPAND_AND_CALL(macro, ...) macro(__VA_ARGS__)
+#define EXPAND_CALL(macro, ...) macro(__VA_ARGS__)
 
 // removes commas in a list of arguments, leaves a space between each one
 #define REMOVE_COMMAS(...) _REMOVE_COMMAS_0(__VA_ARGS__)
@@ -23,11 +27,13 @@
 // a common way to use is to make two macros (ex. EXAMPLE_A_THING and EXAMPLE_NOTHING) and concat your prefix with the
 // result of this macro, so you can do different things depending on the thingyness
 #define CHECK_IF_THING(...) _CHECK_IF_THING_A(REMOVE_COMMAS(__VA_ARGS__))
-#define _CHECK_IF_THING_A(a) EXPAND_AND_CALL(_CHECK_IF_THING_C, _CHECK_IF_THING_B a (), A_THING)
+#define _CHECK_IF_THING_A(a) EXPAND_CALL(_CHECK_IF_THING_C, _CHECK_IF_THING_B a (), A_THING)
 #define _CHECK_IF_THING_B() dummy, NOTHING
 #define _CHECK_IF_THING_C(a, b, ...) b
 
-//#define COUNT_THINGS(...) CHECK_IF_THING(GET_FIRST_ARG(__VA_ARGS__))
+#define COUNT_THINGS(...) EXPAND_CAT(_COUNT_THINGS_, CHECK_IF_THING(__VA_ARGS__))(__VA_ARGS__)
+#define _COUNT_THINGS_NOTHING(...) 0
+#define _COUNT_THINGS_A_THING(...) 1
 
 // Tests
 
@@ -35,7 +41,7 @@
 #define TEST_CASE(expr, expected) _TEST_CASE_A(#expr, expr, expected)
 
 // like TEST_CASE, but for when you are testing a macro expression
-#define TEST_CASE_MACRO(macro_expr, expected) _TEST_CASE_A(#macro_expr, EXPAND_AND_CALL(TO_STRING, macro_expr), #expected)
+#define TEST_CASE_MACRO(macro_expr, expected) _TEST_CASE_A(#macro_expr, EXPAND_CALL(TO_STRING, macro_expr), #expected)
 
 #define _TEST_CASE_A(expr_str, result, expected) { \
 	const bool success = (result == expected); \
