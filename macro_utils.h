@@ -21,7 +21,7 @@
 #define EXPAND_CALL(macro, ...) macro(__VA_ARGS__)
 
 // removes commas in a list of arguments, leaves a space between each one
-#define REMOVE_COMMAS(...) AG_REMOVE_COMMAS_0(__VA_ARGS__)
+#define REMOVE_COMMAS(...) _AG_REMOVE_COMMAS_0(__VA_ARGS__)
 
 // for print('#define _REMOVE_COMMAS_' + str(i) + '(a, ...) a _REMOVE_COMMAS_' + str(i) + '(__VA_ARGS__)')
 
@@ -36,8 +36,7 @@
 
 #define COUNT_THINGS(...) EXPAND_CAT(_COUNT_THINGS_, CHECK_IF_THING(__VA_ARGS__))(__VA_ARGS__)
 #define _COUNT_THINGS_NOTHING(...) 0
-#define _COUNT_THINGS_A_THING(...) _COUNT_THINGS_A(__VA_ARGS__, )
-#define _COUNT_THINGS_A
+#define _COUNT_THINGS_A_THING(...) EXPAND_CALL(_AG_COUNT_THINGS, __VA_ARGS__, _AG_COUNT_THINGS_NUMBERS)
 
 // Tests
 
