@@ -42,6 +42,8 @@ int main()
 	std::cout << "MAP:" << std::endl;
 	#define PUT_IN_BRAC(a, i) [i: a]
 	TEST_CASE_MACRO(MAP_FWD_UP(PUT_IN_BRAC, a, b, c, d), [0: a] [1: b] [2: c] [3: d]);
+	TEST_CASE_MACRO(MAP_FWD_UP(PUT_IN_BRAC, a), [0: a]);
+	TEST_CASE_MACRO(MAP_FWD_UP(PUT_IN_BRAC), );
 	std::cout << std::endl;
 	
 	std::cout << "COUNT_THINGS:" << std::endl;

@@ -35,3 +35,12 @@ do
 	printf "_$i, "
 done
 printf "n, ...) n\n"
+
+printf "// MAP\n"
+max_map=24
+printf "#define _AG_MAP_0(macro, index, empty)\n"
+printf "#define _AG_MAP_1(macro, index, item) macro(item, index)\n"
+for i in $(seq 2 $max_map)
+do
+	printf "#define _AG_MAP_$i(macro, index, item, ...) macro(item, index) _AG_MAP_$[i - 1](macro, EXPAND_CAT(INC_, index), __VA_ARGS__)\n"
+done

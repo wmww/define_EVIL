@@ -38,9 +38,7 @@
 #define _COUNT_THINGS_NOTHING(...) 0
 #define _COUNT_THINGS_A_THING(...) EXPAND_CALL(_AG_COUNT_THINGS, __VA_ARGS__, _AG_COUNT_THINGS_NUMBERS)
 
-#define MAP_FWD_UP(macro, ...)
-//#define _MAP_1(macro, index, item, ...) macro(item, index)
-//#define _MAP_10(macro, index, item, ...) macro(item, index) _MAP_9(macro, index##_INC, __VA_ARGS__)
+#define MAP_FWD_UP(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, 0, __VA_ARGS__)
 
 // Tests
 
