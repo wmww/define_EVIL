@@ -12,6 +12,12 @@ int main()
 	#define xyzw_a foo
 	TEST_CASE_MACRO(EXPAND_CALL(TO_STRING, XYZW), "xyzw");
 	TEST_CASE_MACRO(EXPAND_CAT(XYZW, _a), foo);
+	TEST_CASE_MACRO(INC_0, 1);
+	TEST_CASE_MACRO(EXPAND_CAT(INC_, EXPAND_CAT(INC_, 12)), 14);
+	TEST_CASE_MACRO(EXPAND_CAT(INC_, 23), 24);
+	TEST_CASE_MACRO(EXPAND_CAT(DEC_, 6), 5);
+	TEST_CASE_MACRO(EXPAND_CAT(DEC_, 1), 0);
+	TEST_CASE_MACRO(EXPAND_CAT(DEC_, 24), 23);
 	std::cout << std::endl;
 	
 	std::cout << "REMOVE_COMMAS:" << std::endl;
@@ -33,6 +39,11 @@ int main()
 	TEST_CASE_MACRO(CHECK_IF_THING(,,,,,,,,,,,,,), NOTHING);
 	std::cout << std::endl;
 	
+	std::cout << "MAP:" << std::endl;
+	#define PUT_IN_BRAC(a, i) [i: a]
+	TEST_CASE_MACRO(MAP_FWD_UP(PUT_IN_BRAC, a, b, c, d), [0: a] [1: b] [2: c] [3: d]);
+	std::cout << std::endl;
+	
 	std::cout << "COUNT_THINGS:" << std::endl;
 	TEST_CASE_MACRO(COUNT_THINGS(), 0);
 	TEST_CASE_MACRO(COUNT_THINGS(a), 1);
@@ -40,13 +51,6 @@ int main()
 	TEST_CASE_MACRO(COUNT_THINGS(a, b, c), 3);
 	TEST_CASE_MACRO(COUNT_THINGS(EMPTY_MACRO), 0);
 	TEST_CASE_MACRO(COUNT_THINGS("abc", 2, fsdafds, ()), 4);
-	std::cout << std::endl;
-	
-	std::cout << "meta tests:" << std::endl;
-	TEST_CASE(1 + 2, 3);
-	TEST_CASE("foo", "foo");
-	TEST_CASE("this is fine", "failure");
-	TEST_CASE_MACRO(TO_STRING(abc), "abc");
 	std::cout << std::endl;
 	
 	return 0;
