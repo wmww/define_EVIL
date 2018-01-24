@@ -12,13 +12,22 @@
 // expands the arguments and then call macro with the expanded arguments
 #define EXPAND_AND_CALL(macro, ...) macro(__VA_ARGS__)
 
-// usage: CHECK_IF_THING(any_single_arg)	-> A_THING
+// removes commas in a list of arguments, leaves a space between each one
+#define REMOVE_COMMAS(...) _REMOVE_COMMAS_0(__VA_ARGS__)
+// $ max=23; for i in $(seq 0 $max); do echo "#define _REMOVE_COMMAS_$i(a, ...) a _REMOVE_COMMAS_$[i + 1](__VA_ARGS__)"; done; echo "#define _REMOVE_COMMAS_$[max + 1](a, ...) a"
+
+// for print('#define _REMOVE_COMMAS_' + str(i) + '(a, ...) a _REMOVE_COMMAS_' + str(i) + '(__VA_ARGS__)')
+
+// usage: CHECK_IF_THING(one_or_more, args)	-> A_THING
 // usage: CHECK_IF_THING()					-> NOTHING
 // a common way to use is to make two macros (ex. EXAMPLE_A_THING and EXAMPLE_NOTHING) and concat your prefix with the
 // result of this macro, so you can do different things depending on the thingyness
-#define _CHECK_IF_THING_A() dummy, NOTHING
-#define _CHECK_IF_THING_B(a, b, ...) b
-#define CHECK_IF_THING(a) EXPAND_AND_CALL(_CHECK_IF_THING_B, _CHECK_IF_THING_A a (), A_THING)
+#define CHECK_IF_THING(...) _CHECK_IF_THING_A(REMOVE_COMMAS(__VA_ARGS__))
+#define _CHECK_IF_THING_A(a) EXPAND_AND_CALL(_CHECK_IF_THING_C, _CHECK_IF_THING_B a (), A_THING)
+#define _CHECK_IF_THING_B() dummy, NOTHING
+#define _CHECK_IF_THING_C(a, b, ...) b
+
+//#define COUNT_THINGS(...) CHECK_IF_THING(GET_FIRST_ARG(__VA_ARGS__))
 
 // Tests
 
@@ -36,5 +45,33 @@
 	} \
 	std::cout << std::endl; \
 }
+
+// auto gen
+
+#define _REMOVE_COMMAS_0(a, ...) a _REMOVE_COMMAS_1(__VA_ARGS__)
+#define _REMOVE_COMMAS_1(a, ...) a _REMOVE_COMMAS_2(__VA_ARGS__)
+#define _REMOVE_COMMAS_2(a, ...) a _REMOVE_COMMAS_3(__VA_ARGS__)
+#define _REMOVE_COMMAS_3(a, ...) a _REMOVE_COMMAS_4(__VA_ARGS__)
+#define _REMOVE_COMMAS_4(a, ...) a _REMOVE_COMMAS_5(__VA_ARGS__)
+#define _REMOVE_COMMAS_5(a, ...) a _REMOVE_COMMAS_6(__VA_ARGS__)
+#define _REMOVE_COMMAS_6(a, ...) a _REMOVE_COMMAS_7(__VA_ARGS__)
+#define _REMOVE_COMMAS_7(a, ...) a _REMOVE_COMMAS_8(__VA_ARGS__)
+#define _REMOVE_COMMAS_8(a, ...) a _REMOVE_COMMAS_9(__VA_ARGS__)
+#define _REMOVE_COMMAS_9(a, ...) a _REMOVE_COMMAS_10(__VA_ARGS__)
+#define _REMOVE_COMMAS_10(a, ...) a _REMOVE_COMMAS_11(__VA_ARGS__)
+#define _REMOVE_COMMAS_11(a, ...) a _REMOVE_COMMAS_12(__VA_ARGS__)
+#define _REMOVE_COMMAS_12(a, ...) a _REMOVE_COMMAS_13(__VA_ARGS__)
+#define _REMOVE_COMMAS_13(a, ...) a _REMOVE_COMMAS_14(__VA_ARGS__)
+#define _REMOVE_COMMAS_14(a, ...) a _REMOVE_COMMAS_15(__VA_ARGS__)
+#define _REMOVE_COMMAS_15(a, ...) a _REMOVE_COMMAS_16(__VA_ARGS__)
+#define _REMOVE_COMMAS_16(a, ...) a _REMOVE_COMMAS_17(__VA_ARGS__)
+#define _REMOVE_COMMAS_17(a, ...) a _REMOVE_COMMAS_18(__VA_ARGS__)
+#define _REMOVE_COMMAS_18(a, ...) a _REMOVE_COMMAS_19(__VA_ARGS__)
+#define _REMOVE_COMMAS_19(a, ...) a _REMOVE_COMMAS_20(__VA_ARGS__)
+#define _REMOVE_COMMAS_20(a, ...) a _REMOVE_COMMAS_21(__VA_ARGS__)
+#define _REMOVE_COMMAS_21(a, ...) a _REMOVE_COMMAS_22(__VA_ARGS__)
+#define _REMOVE_COMMAS_22(a, ...) a _REMOVE_COMMAS_23(__VA_ARGS__)
+#define _REMOVE_COMMAS_23(a, ...) a _REMOVE_COMMAS_24(__VA_ARGS__)
+#define _REMOVE_COMMAS_24(a, ...) a
 
 #endif // MACRO_UTILS_H
