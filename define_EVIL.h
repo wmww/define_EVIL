@@ -1,5 +1,5 @@
-#ifndef MACRO_UTILS_H
-#define MACRO_UTILS_H
+#ifndef EVIL
+#define EVIL
 
 // macros auto-generated from auto_gen.sh
 // should all be prefixed with AG_
@@ -57,4 +57,4 @@
 	std::cout << std::endl; \
 }
 
-#endif // MACRO_UTILS_H
+#endif // EVIL
