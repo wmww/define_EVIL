@@ -39,6 +39,15 @@ int main()
 	TEST_CASE_MACRO(CHECK_IF_THING(,,,,,,,,,,,,,), NOTHING);
 	std::cout << std::endl;
 	
+	std::cout << "CHECK_FOR_PEREN:" << std::endl;
+	TEST_CASE_MACRO(CHECK_FOR_PEREN(), NO_PEREN);
+	TEST_CASE_MACRO(CHECK_FOR_PEREN(a), NO_PEREN);
+	TEST_CASE_MACRO(CHECK_FOR_PEREN("a"), NO_PEREN);
+	TEST_CASE_MACRO(CHECK_FOR_PEREN(()), HAS_PEREN);
+	TEST_CASE_MACRO(CHECK_FOR_PEREN((a)), HAS_PEREN);
+	TEST_CASE_MACRO(CHECK_FOR_PEREN((1, "a", ())), HAS_PEREN);
+	std::cout << std::endl;
+	
 	std::cout << "MAP:" << std::endl;
 	#define PUT_IN_BRAC(a, i) [i: a]
 	TEST_CASE_MACRO(MAP(PUT_IN_BRAC, a, b, c, d), [0: a] [1: b] [2: c] [3: d]);
