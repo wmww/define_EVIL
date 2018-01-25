@@ -31,6 +31,7 @@
 // CHECK_IF_THING()						-> NOTHING
 // a common way to use is to make two macros (ex. EXAMPLE_A_THING and EXAMPLE_NOTHING) and concat your prefix with the
 // result of this macro, so you can do different things depending on the thingyness
+// the last argument must not be a function-like macro
 // depends on: EXPAND_CALL, EXPAND_CAT, EXPAND
 // I realize how much of a clusterfuck this is. If you can make it cleaner without failing any tests, plz submit PR
 #define CHECK_IF_THING(...) _CHECK_IF_THING_A(EXPAND_CAT(_, EXPAND(_CHECK_IF_THING_D REMOVE_COMMAS(__VA_ARGS__))))
@@ -46,14 +47,15 @@
 // CHECK_FOR_PEREN((), 6, "a") -> NO_PEREN
 // CHECK_FOR_PEREN(()) -> HAS_PEREN
 // CHECK_FOR_PEREN((a, 6, "a")) -> HAS_PEREN
-// depends on: EXPAND_CAT
-#define CHECK_FOR_PEREN(a) EXPAND_CAT(_NOT, _PEREN_FOUND a) )
-#define _PEREN_FOUND(...) _DOES_HAVE_PEREN(
-#define _NOT_PEREN_FOUND _NO_PEREN(
-#define _NO_PEREN(...) NO_PEREN
-#define _NOT_DOES_HAVE_PEREN(...) HAS_PEREN
+// the last argument must not be a function-like macro
+// depends on: EXPAND_CAT, CHECK_IF_THING
+#define CHECK_FOR_PEREN(...) EXPAND_CAT(_PEREN_, CHECK_IF_THING(_CHECK_FOR_PEREN_A __VA_ARGS__))
+#define _CHECK_FOR_PEREN_A(...)
+#define _PEREN_A_THING NO_PEREN
+#define _PEREN_NOTHING HAS_PEREN
 
 // expands to the number of arguments; empty arguments are counted; zero arguments is handeled correctly
+// the last argument must not be a function-like macro
 // depends on: EXPAND_CAT, EXPAND_CALL, CHECK_IF_THING, _AG_COUNT_THINGS, _AG_COUNT_THINGS_NUMBERS
 #define COUNT_THINGS(...) EXPAND_CAT(_COUNT_THINGS_, CHECK_IF_THING(__VA_ARGS__))(__VA_ARGS__)
 #define _COUNT_THINGS_NOTHING(...) 0
