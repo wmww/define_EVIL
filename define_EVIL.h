@@ -8,27 +8,27 @@
 /// General Utils
 
 // convert input to string literal, can be used with EXPAND_CALL
+// depends on: none
 #define TO_STRING(a) #a
 
 // expands the arguments and concatinates them
+// depends on: none
 #define EXPAND_CAT(a, b) _EXPAND_CAT(a, b)
 #define _EXPAND_CAT(a, b) a##b
 
-// returns the first argument
-// #define GET_FIRST_ARG(first, ...) first
-
 // expands the arguments and then call macro with the expanded arguments
+// depends on: none
 #define EXPAND_CALL(macro, ...) macro(__VA_ARGS__)
 
 // removes commas in a list of arguments, leaves a space between each one
+// depends on: _AG_REMOVE_COMMAS_...
 #define REMOVE_COMMAS(...) _AG_REMOVE_COMMAS_0(__VA_ARGS__)
 
-// for print('#define _REMOVE_COMMAS_' + str(i) + '(a, ...) a _REMOVE_COMMAS_' + str(i) + '(__VA_ARGS__)')
-
 // CHECK_IF_THING(one_or_more, args)	-> A_THING
-// CHECK_IF_THING()					-> NOTHING
+// CHECK_IF_THING()						-> NOTHING
 // a common way to use is to make two macros (ex. EXAMPLE_A_THING and EXAMPLE_NOTHING) and concat your prefix with the
 // result of this macro, so you can do different things depending on the thingyness
+// depends on: EXPAND_CALL
 #define CHECK_IF_THING(...) _CHECK_IF_THING_A(REMOVE_COMMAS(__VA_ARGS__))
 #define _CHECK_IF_THING_A(a) EXPAND_CALL(_CHECK_IF_THING_C, _CHECK_IF_THING_B a (), A_THING)
 #define _CHECK_IF_THING_B() dummy, NOTHING
@@ -38,6 +38,7 @@
 // CHECK_FOR_PEREN("a") -> NO_PEREN
 // CHECK_FOR_PEREN(()) -> HAS_PEREN
 // CHECK_FOR_PEREN((a, 6, "a")) -> HAS_PEREN
+// depends on: EXPAND_CAT
 #define CHECK_FOR_PEREN(a) EXPAND_CAT(_NOT, _PEREN_FOUND a) )
 #define _PEREN_FOUND(...) _DOES_HAVE_PEREN(
 #define _NOT_PEREN_FOUND _NO_PEREN(
@@ -45,6 +46,7 @@
 #define _NOT_DOES_HAVE_PEREN(...) HAS_PEREN
 
 // expands to the number of arguments; empty arguments are counted; zero arguments is handeled correctly
+// depends on: EXPAND_CAT, EXPAND_CALL, CHECK_IF_THING, _AG_COUNT_THINGS, _AG_COUNT_THINGS_NUMBERS
 #define COUNT_THINGS(...) EXPAND_CAT(_COUNT_THINGS_, CHECK_IF_THING(__VA_ARGS__))(__VA_ARGS__)
 #define _COUNT_THINGS_NOTHING(...) 0
 #define _COUNT_THINGS_A_THING(...) EXPAND_CALL(_AG_COUNT_THINGS, __VA_ARGS__, _AG_COUNT_THINGS_NUMBERS)
@@ -54,6 +56,7 @@
 // MAP_DOWN: indexes count down to 0 instead of up from 0
 // MAP_REVERSE: items are in reverse order
 // MAP_REVERSE_DOWN: both
+// depends on: EXPAND_CAT, COUNT_THINGS, INC_.. (auto generated), DEC_.. (auto generated)
 #define MAP(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, _MAP_FWD, 0, INC_, __VA_ARGS__)
 #define MAP_DOWN(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, _MAP_FWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
 #define MAP_REVERSE(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, _MAP_BKWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
@@ -64,9 +67,11 @@
 // Tests
 
 // tests if the input expression matches the expected value and prints result
+// depends on:  none
 #define TEST_CASE(expr, expected) _TEST_CASE_A(#expr, expr, expected)
 
 // like TEST_CASE, but for when you are testing a macro expression
+// depends on:  EXPAND_CALL, TO_STRING
 #define TEST_CASE_MACRO(macro_expr, expected) _TEST_CASE_A(#macro_expr, EXPAND_CALL(TO_STRING, macro_expr), #expected)
 
 #define _TEST_CASE_A(expr_str, result, expected) { \
