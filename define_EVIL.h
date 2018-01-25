@@ -38,7 +38,12 @@
 #define _COUNT_THINGS_NOTHING(...) 0
 #define _COUNT_THINGS_A_THING(...) EXPAND_CALL(_AG_COUNT_THINGS, __VA_ARGS__, _AG_COUNT_THINGS_NUMBERS)
 
-#define MAP_FWD_UP(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, 0, __VA_ARGS__)
+#define MAP(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, _MAP_FWD, 0, INC_, __VA_ARGS__)
+#define MAP_DOWN(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, _MAP_FWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, _MAP_BKWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE_DOWN(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, _MAP_BKWD, 0, INC_, __VA_ARGS__)
+#define _MAP_FWD(a, b) a b
+#define _MAP_BKWD(a, b) b a
 
 // Tests
 

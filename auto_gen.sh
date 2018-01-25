@@ -34,13 +34,14 @@ for i in $(seq 0 $[max_count - 1])
 do
 	printf "_$i, "
 done
-printf "n, ...) n\n"
+printf "n, ...) n\n\n"
 
 printf "// MAP\n"
 max_map=24
-printf "#define _AG_MAP_0(macro, index, empty)\n"
-printf "#define _AG_MAP_1(macro, index, item) macro(item, index)\n"
+printf "#define _AG_MAP_0(macro, order, index, dir, empty)\n"
+printf "#define _AG_MAP_1(macro, order, index, dir, item) macro(item, index)\n"
 for i in $(seq 2 $max_map)
 do
-	printf "#define _AG_MAP_$i(macro, index, item, ...) macro(item, index) _AG_MAP_$[i - 1](macro, EXPAND_CAT(INC_, index), __VA_ARGS__)\n"
+	printf "#define _AG_MAP_$i(macro, order, index, dir, item, ...) order(macro(item, index), _AG_MAP_$[i - 1](macro, order, EXPAND_CAT(dir, index), dir, __VA_ARGS__))\n"
 done
+printf "\n"
