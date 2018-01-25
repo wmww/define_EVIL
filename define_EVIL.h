@@ -46,12 +46,11 @@
 // CHECK_FOR_PEREN((), 6, "a") -> NO_PEREN
 // CHECK_FOR_PEREN(()) -> HAS_PEREN
 // CHECK_FOR_PEREN((a, 6, "a")) -> HAS_PEREN
-// depends on: EXPAND_CAT
-#define CHECK_FOR_PEREN(a) EXPAND_CAT(_NOT, _PEREN_FOUND a) )
-#define _PEREN_FOUND(...) _DOES_HAVE_PEREN(
-#define _NOT_PEREN_FOUND _NO_PEREN(
-#define _NO_PEREN(...) NO_PEREN
-#define _NOT_DOES_HAVE_PEREN(...) HAS_PEREN
+// depends on: EXPAND_CAT, CHECK_IF_THING
+#define CHECK_FOR_PEREN(...) EXPAND_CAT(_PEREN_, CHECK_IF_THING(_CHECK_FOR_PEREN_A __VA_ARGS__))
+#define _CHECK_FOR_PEREN_A(...)
+#define _PEREN_A_THING NO_PEREN
+#define _PEREN_NOTHING HAS_PEREN
 
 // expands to the number of arguments; empty arguments are counted; zero arguments is handeled correctly
 // depends on: EXPAND_CAT, EXPAND_CALL, CHECK_IF_THING, _AG_COUNT_THINGS, _AG_COUNT_THINGS_NUMBERS
