@@ -1,9 +1,9 @@
 #ifndef EVIL
 #define EVIL
 
-// macros auto-generated from auto_gen.sh
-// should all be prefixed with AG_
-#include "auto_gen.h"
+// macros auto-generated from autogen.sh
+// should all be prefixed with _AG_
+#include "autogen.h"
 
 /// General Utils
 

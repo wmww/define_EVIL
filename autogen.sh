@@ -1,4 +1,4 @@
-printf "// auto-generated from auto_gen.sh, DO NOT EDIT!\n\n"
+printf "// auto-generated from autogen.sh, DO NOT EDIT!\n\n"
 
 printf "// INC_ and DEC_\n"
 printf "// usage: cat INC_ or DEC_ to any small number to get n+1 or n-1\n"

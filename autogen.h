@@ -1,4 +1,4 @@
-// auto-generated from auto_gen.sh, DO NOT EDIT!
+// auto-generated from autogen.sh, DO NOT EDIT!
 
 // INC_ and DEC_
 // usage: cat INC_ or DEC_ to any small number to get n+1 or n-1
