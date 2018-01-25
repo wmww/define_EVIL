@@ -11,7 +11,7 @@
 // depends on: none
 #define TO_STRING(a) #a
 
-// expands the arguments and concatinates them
+// expands the arguments and concatenates them
 // depends on: none
 #define EXPAND_CAT(a, b) _EXPAND_CAT(a, b)
 #define _EXPAND_CAT(a, b) a##b
@@ -19,6 +19,9 @@
 // expands the arguments and then call macro with the expanded arguments
 // depends on: none
 #define EXPAND_CALL(macro, ...) macro(__VA_ARGS__)
+
+// even I'm not completely sure why this is needed, but it is.
+#define EXPAND(a) a
 
 // removes commas in a list of arguments, leaves a space between each one
 // depends on: _AG_REMOVE_COMMAS_...
@@ -28,14 +31,19 @@
 // CHECK_IF_THING()						-> NOTHING
 // a common way to use is to make two macros (ex. EXAMPLE_A_THING and EXAMPLE_NOTHING) and concat your prefix with the
 // result of this macro, so you can do different things depending on the thingyness
-// depends on: EXPAND_CALL
-#define CHECK_IF_THING(...) _CHECK_IF_THING_A(REMOVE_COMMAS(__VA_ARGS__))
+// depends on: EXPAND_CALL, EXPAND_CAT, EXPAND
+// I realize how much of a clusterfuck this is. If you can make it cleaner without failing any tests, plz submit PR
+#define CHECK_IF_THING(...) _CHECK_IF_THING_A(EXPAND_CAT(_, EXPAND(_CHECK_IF_THING_D REMOVE_COMMAS(__VA_ARGS__))))
 #define _CHECK_IF_THING_A(a) EXPAND_CALL(_CHECK_IF_THING_C, _CHECK_IF_THING_B a (), A_THING)
 #define _CHECK_IF_THING_B() dummy, NOTHING
 #define _CHECK_IF_THING_C(a, b, ...) b
+#define _CHECK_IF_THING_D(...) dummy
+#define __CHECK_IF_THING_D
 
+// checks if the argument(s) are completely surrounded by parenthesis
 // CHECK_FOR_PEREN() -> NO_PEREN
 // CHECK_FOR_PEREN("a") -> NO_PEREN
+// CHECK_FOR_PEREN((), 6, "a") -> NO_PEREN
 // CHECK_FOR_PEREN(()) -> HAS_PEREN
 // CHECK_FOR_PEREN((a, 6, "a")) -> HAS_PEREN
 // depends on: EXPAND_CAT
