@@ -33,17 +33,20 @@
 
 // CHECK_IF_THING(one_or_more, args)	-> A_THING
 // CHECK_IF_THING()						-> NOTHING
+// NOTE: the final arg can not be the name of a function-like macro!
 // a common way to use is to make two macros (ex. EXAMPLE_A_THING and EXAMPLE_NOTHING) and concat your prefix with the
 // result of this macro, so you can do different things depending on the thingyness
 // the last argument must not be a function-like macro
 // depends on: EXPAND_CALL, EXPAND_CAT, EXPAND
 // I realize how much of a clusterfuck this is. If you can make it cleaner without failing any tests, plz submit PR
 #define CHECK_IF_THING(...) _CHECK_IF_THING_A(EXPAND_CAT(_, EXPAND(_CHECK_IF_THING_D REMOVE_COMMAS(__VA_ARGS__))))
-#define _CHECK_IF_THING_A(a) EXPAND_CALL(_CHECK_IF_THING_C, _CHECK_IF_THING_B a (), A_THING)
+#define _CHECK_IF_THING_A(a) EXPAND_CALL(_CHECK_IF_THING_C, _CHECK_IF_THING_B #a (), A_THING)
 #define _CHECK_IF_THING_B() dummy, NOTHING
 #define _CHECK_IF_THING_C(a, b, ...) b
 #define _CHECK_IF_THING_D(...) dummy
 #define __CHECK_IF_THING_D
+
+#define CHECK_IF_THING_MACRO(a) 
 
 // checks if the argument(s) are completely surrounded by parenthesis
 // CHECK_FOR_PEREN() -> NO_PEREN
@@ -60,6 +63,7 @@
 
 // expands to the number of arguments; empty arguments are counted; zero arguments is handeled correctly
 // the last argument must not be a function-like macro
+// expands to the number of arguments; empty arguments are counted; zero arguments is handled correctly
 // depends on: EXPAND_CAT, EXPAND_CALL, CHECK_IF_THING, _AG_COUNT_THINGS, _AG_COUNT_THINGS_NUMBERS
 #define COUNT_THINGS(...) EXPAND_CAT(_COUNT_THINGS_, CHECK_IF_THING(__VA_ARGS__))(__VA_ARGS__)
 #define _COUNT_THINGS_NOTHING(...) 0
@@ -73,11 +77,18 @@
 // MAP_DOWN: indexes count down to 0 instead of up from 0
 // MAP_REVERSE: items are in reverse order
 // MAP_REVERSE_DOWN: both
-// depends on: EXPAND_CAT, COUNT_THINGS, INC_.. (auto generated), DEC_.. (auto generated)
-#define MAP(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, ORDER_FWD, 0, INC_, __VA_ARGS__)
-#define MAP_DOWN(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, ORDER_FWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, ORDER_BKWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE_DOWN(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, ORDER_BKWD, 0, INC_, __VA_ARGS__)
+// depends on: EXPAND_CAT, COUNT_THINGS, CHECK_FOR_PEREN, INC_.. (auto generated), DEC_.. (auto generated)
+#define MAP(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(_MAP_GET(func, MACRO), _MAP_GET(macro, JOINER), ORDER_FWD, 0, INC_, __VA_ARGS__)
+#define MAP_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(func,, ORDER_FWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(func,, ORDER_BKWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(func,, ORDER_BKWD, 0, INC_, __VA_ARGS__)
+#define _MAP_GET(func, item) EXPAND_CAT(_MAP_FUNC_, CHECK_FOR_PEREN(func)) (func, item)
+#define _MAP_FUNC_HAS_PEREN(func, item) _MAP_FUNC_HAS_PEREN_##item func
+#define _MAP_FUNC_HAS_PEREN_MACRO(macro, joiner) macro
+#define _MAP_FUNC_HAS_PEREN_JOINER(macro, joiner) joiner
+#define _MAP_FUNC_NO_PEREN(func, item) _MAP_FUNC_NO_PEREN_##item (func)
+#define _MAP_FUNC_NO_PEREN_MACRO(func) func
+#define _MAP_FUNC_NO_PEREN_JOINER(func)
 
 // Tests
 
