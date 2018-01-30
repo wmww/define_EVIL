@@ -56,6 +56,23 @@ int main()
 	TEST_CASE_MACRO(CHECK_FOR_PEREN((1, "a", ())), HAS_PEREN);
 	std::cout << std::endl;
 	
+	std::cout << "REPEAT:" << std::endl;
+	#define ADD_T(i) T_##i
+	#define COMMA ,
+	TEST_CASE_MACRO(REPEAT(ADD_T, 0), );
+	TEST_CASE_MACRO(REPEAT(ADD_T, 1), T_0);
+	TEST_CASE_MACRO(REPEAT(ADD_T, 4), T_0 T_1 T_2 T_3);
+	TEST_CASE_MACRO(REPEAT_DOWN(ADD_T, 0), );
+	TEST_CASE_MACRO(REPEAT_DOWN(ADD_T, 1), T_0);
+	TEST_CASE_MACRO(REPEAT_DOWN(ADD_T, 4), T_3 T_2 T_1 T_0);
+	// TEST_CASE_MACRO(REPEAT((ADD_T, COMMA), 0), );
+	// TEST_CASE_MACRO(REPEAT((ADD_T, COMMA), 1), T_0);
+	// TEST_CASE_MACRO(REPEAT((ADD_T, COMMA), 4), T_0, T_1, T_2, T_3);
+	// TEST_CASE_MACRO(REPEAT_DOWN((ADD_T, COMMA), 0), );
+	// TEST_CASE_MACRO(REPEAT_DOWN((ADD_T, COMMA), 1), T_0);
+	// TEST_CASE_MACRO(REPEAT_DOWN((ADD_T, COMMA), 4), T_3, T_2, T_1 T_0);
+	std::cout << std::endl;
+	
 	std::cout << "MAP:" << std::endl;
 	#define PUT_IN_BRAC(a, i) [i: a]
 	TEST_CASE_MACRO(MAP(PUT_IN_BRAC, a, b, c, d), [0: a] [1: b] [2: c] [3: d]);

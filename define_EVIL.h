@@ -11,6 +11,10 @@
 // depends on: none
 #define TO_STRING(a) #a
 
+// used internally by other macros
+#define ORDER_FWD(a, b) a b
+#define ORDER_BKWD(a, b) b a
+
 // expands the arguments and concatenates them
 // depends on: none
 #define EXPAND_CAT(a, b) _EXPAND_CAT(a, b)
@@ -61,18 +65,19 @@
 #define _COUNT_THINGS_NOTHING(...) 0
 #define _COUNT_THINGS_A_THING(...) EXPAND_CALL(_AG_COUNT_THINGS, __VA_ARGS__, _AG_COUNT_THINGS_NUMBERS)
 
+#define REPEAT(macro, count) _AG_REPEAT_##count(macro, ORDER_FWD)
+#define REPEAT_DOWN(macro, count) _AG_REPEAT_##count(macro, ORDER_BKWD)
+
 // applies the given macro to all additional arguments
 // macro should accept item and index
 // MAP_DOWN: indexes count down to 0 instead of up from 0
 // MAP_REVERSE: items are in reverse order
 // MAP_REVERSE_DOWN: both
 // depends on: EXPAND_CAT, COUNT_THINGS, INC_.. (auto generated), DEC_.. (auto generated)
-#define MAP(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, _MAP_FWD, 0, INC_, __VA_ARGS__)
-#define MAP_DOWN(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, _MAP_FWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, _MAP_BKWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE_DOWN(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, _MAP_BKWD, 0, INC_, __VA_ARGS__)
-#define _MAP_FWD(a, b) a b
-#define _MAP_BKWD(a, b) b a
+#define MAP(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, ORDER_FWD, 0, INC_, __VA_ARGS__)
+#define MAP_DOWN(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, ORDER_FWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, ORDER_BKWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE_DOWN(macro, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(macro, ORDER_BKWD, 0, INC_, __VA_ARGS__)
 
 // Tests
 
