@@ -40,11 +40,11 @@ printf "n, ...) n\n\n"
 
 printf "// REPEAT\n"
 max_repeat=24
-printf "#define _AG_REPEAT_0(macro, order)\n"
-printf "#define _AG_REPEAT_1(macro, order) macro(0)\n"
+printf "#define _AG_REPEAT_0(macro, joiner, order)\n"
+printf "#define _AG_REPEAT_1(macro, joiner, order) macro(0)\n"
 for (( i=2; i<=$max_repeat; i++ ))
 do
-	printf "#define _AG_REPEAT_$i(macro, order) order(_AG_REPEAT_$[i - 1](macro, order), macro($[i - 1]))\n"
+	printf "#define _AG_REPEAT_$i(macro, joiner, order) order(_AG_REPEAT_$[i - 1](macro, joiner, order), joiner, macro($[i - 1]))\n"
 done
 printf "\n"
 

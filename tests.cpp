@@ -2,6 +2,9 @@
 #include <iostream>
 
 #define EMPTY_MACRO
+#define PUT_IN_BRAC(a, i) [i: a]
+#define ADD_T(i) T_##i
+#define COMMA ,
 
 int main()
 {
@@ -57,30 +60,29 @@ int main()
 	// TEST_CASE_MACRO(CHECK_FOR_PEREN((), 1, "a"), NO_PEREN);
 	std::cout << std::endl;
 	
+	std::cout << "GET_ITEM:" << std::endl;
+	TEST_CASE_MACRO(GET_ITEM(PUT_IN_BRAC, FIRST), PUT_IN_BRAC);
+	TEST_CASE_MACRO(GET_ITEM(PUT_IN_BRAC, SECOND), );
+	TEST_CASE_MACRO(GET_ITEM((PUT_IN_BRAC, |), FIRST), PUT_IN_BRAC);
+	TEST_CASE_MACRO(GET_ITEM((PUT_IN_BRAC, |), SECOND), |);
+	std::cout << std::endl;
+	
 	std::cout << "REPEAT:" << std::endl;
-	#define ADD_T(i) T_##i
-	#define COMMA ,
 	TEST_CASE_MACRO(REPEAT(ADD_T, 0), );
 	TEST_CASE_MACRO(REPEAT(ADD_T, 1), T_0);
 	TEST_CASE_MACRO(REPEAT(ADD_T, 4), T_0 T_1 T_2 T_3);
 	TEST_CASE_MACRO(REPEAT_DOWN(ADD_T, 0), );
 	TEST_CASE_MACRO(REPEAT_DOWN(ADD_T, 1), T_0);
 	TEST_CASE_MACRO(REPEAT_DOWN(ADD_T, 4), T_3 T_2 T_1 T_0);
-	// TEST_CASE_MACRO(REPEAT((ADD_T, COMMA), 0), );
-	// TEST_CASE_MACRO(REPEAT((ADD_T, COMMA), 1), T_0);
-	// TEST_CASE_MACRO(REPEAT((ADD_T, COMMA), 4), T_0, T_1, T_2, T_3);
-	// TEST_CASE_MACRO(REPEAT_DOWN((ADD_T, COMMA), 0), );
-	// TEST_CASE_MACRO(REPEAT_DOWN((ADD_T, COMMA), 1), T_0);
-	// TEST_CASE_MACRO(REPEAT_DOWN((ADD_T, COMMA), 4), T_3, T_2, T_1 T_0);
+	TEST_CASE_MACRO(REPEAT((ADD_T, |), 0), );
+	TEST_CASE_MACRO(REPEAT((ADD_T, |), 1), T_0);
+	TEST_CASE_MACRO(REPEAT((ADD_T, |), 4), T_0 | T_1 | T_2 | T_3);
+	TEST_CASE_MACRO(REPEAT_DOWN((ADD_T, |), 0), );
+	TEST_CASE_MACRO(REPEAT_DOWN((ADD_T, |), 1), T_0);
+	TEST_CASE_MACRO(REPEAT_DOWN((ADD_T, |), 4), T_3 | T_2 | T_1 | T_0);
 	std::cout << std::endl;
 	
 	std::cout << "MAP:" << std::endl;
-	#define PUT_IN_BRAC(a, i) [i: a]
-	
-	TEST_CASE_MACRO(_MAP_GET(PUT_IN_BRAC, MACRO), PUT_IN_BRAC);
-	TEST_CASE_MACRO(_MAP_GET(PUT_IN_BRAC, JOINER), );
-	TEST_CASE_MACRO(_MAP_GET((PUT_IN_BRAC, |), MACRO), PUT_IN_BRAC);
-	TEST_CASE_MACRO(_MAP_GET((PUT_IN_BRAC, |), JOINER), |);
 	
 	TEST_CASE_MACRO(MAP(PUT_IN_BRAC, a, b, c, d), [0: a] [1: b] [2: c] [3: d]);
 	TEST_CASE_MACRO(MAP(PUT_IN_BRAC, a), [0: a]);

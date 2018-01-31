@@ -73,8 +73,21 @@
 #define _COUNT_THINGS_NOTHING(...) 0
 #define _COUNT_THINGS_A_THING(...) EXPAND_CALL(_AG_COUNT_THINGS, __VA_ARGS__, _AG_COUNT_THINGS_NUMBERS)
 
-#define REPEAT(macro, count) _AG_REPEAT_##count(macro, ORDER_FWD_2)
-#define REPEAT_DOWN(macro, count) _AG_REPEAT_##count(macro, ORDER_BKWD_2)
+// GET_ITEM(abc, FIRST) -> abc
+// GET_ITEM(abc, SECOND) -> [empty]
+// GET_ITEM((abc, xyz), FIRST) -> abc
+// GET_ITEM((abc, xyz), SECOND) -> xyz
+// specalized to be used with REPEAT and MAP, may be more generalized later
+#define GET_ITEM(func, item) EXPAND_CAT(_GET_ITEM_, CHECK_FOR_PEREN(func)) (func, item)
+#define _GET_ITEM_HAS_PEREN(func, item) _GET_ITEM_HAS_PEREN_##item func
+#define _GET_ITEM_HAS_PEREN_FIRST(macro, joiner) macro
+#define _GET_ITEM_HAS_PEREN_SECOND(macro, joiner) joiner
+#define _GET_ITEM_NO_PEREN(func, item) _GET_ITEM_NO_PEREN_##item (func)
+#define _GET_ITEM_NO_PEREN_FIRST(func) func
+#define _GET_ITEM_NO_PEREN_SECOND(func)
+
+#define REPEAT(func, count) _AG_REPEAT_##count(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_FWD_3)
+#define REPEAT_DOWN(func, count) _AG_REPEAT_##count(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_BKWD_3)
 
 // applies the given macro to all additional arguments
 // macro should accept item and index
@@ -82,17 +95,10 @@
 // MAP_REVERSE: items are in reverse order
 // MAP_REVERSE_DOWN: both
 // depends on: EXPAND_CAT, COUNT_THINGS, CHECK_FOR_PEREN, INC_.. (auto generated), DEC_.. (auto generated)
-#define MAP(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(_MAP_GET(func, MACRO), _MAP_GET(func, JOINER), ORDER_FWD_3, 0, INC_, __VA_ARGS__)
-#define MAP_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(_MAP_GET(func, MACRO), _MAP_GET(func, JOINER), ORDER_FWD_3, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(_MAP_GET(func, MACRO), _MAP_GET(func, JOINER), ORDER_BKWD_3, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(_MAP_GET(func, MACRO), _MAP_GET(func, JOINER), ORDER_BKWD_3, 0, INC_, __VA_ARGS__)
-#define _MAP_GET(func, item) EXPAND_CAT(_MAP_FUNC_, CHECK_FOR_PEREN(func)) (func, item)
-#define _MAP_FUNC_HAS_PEREN(func, item) _MAP_FUNC_HAS_PEREN_##item func
-#define _MAP_FUNC_HAS_PEREN_MACRO(macro, joiner) macro
-#define _MAP_FUNC_HAS_PEREN_JOINER(macro, joiner) joiner
-#define _MAP_FUNC_NO_PEREN(func, item) _MAP_FUNC_NO_PEREN_##item (func)
-#define _MAP_FUNC_NO_PEREN_MACRO(func) func
-#define _MAP_FUNC_NO_PEREN_JOINER(func)
+#define MAP(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_FWD_3, 0, INC_, __VA_ARGS__)
+#define MAP_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_FWD_3, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_BKWD_3, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_BKWD_3, 0, INC_, __VA_ARGS__)
 
 // Tests
 
