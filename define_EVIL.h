@@ -19,15 +19,15 @@
 
 // expands the arguments and concatenates them
 // depends on: none
-#define EXPAND_CAT(a, b) _EXPAND_CAT(a, b)
-#define _EXPAND_CAT(a, b) a##b
+#define EXPAND_CAT(a, ...) _EXPAND_CAT(a, __VA_ARGS__)
+#define _EXPAND_CAT(a, ...) a##__VA_ARGS__
 
 // expands the arguments and then call macro with the expanded arguments
 // depends on: none
 #define EXPAND_CALL(macro, ...) macro(__VA_ARGS__)
 
 // even I'm not completely sure why this is needed, but it is.
-#define EXPAND(a) a
+#define EXPAND(...) __VA_ARGS__
 
 // removes commas in a list of arguments, leaves a space between each one
 // depends on: _AG_REMOVE_COMMAS_...
@@ -51,15 +51,19 @@
 // checks if the argument(s) are completely surrounded by parenthesis
 // CHECK_FOR_PEREN() -> NO_PEREN
 // CHECK_FOR_PEREN("a") -> NO_PEREN
-// CHECK_FOR_PEREN((), 6, "a") -> NO_PEREN
+// CHECK_FOR_PEREN(6, "a") -> NO_PEREN
 // CHECK_FOR_PEREN(()) -> HAS_PEREN
 // CHECK_FOR_PEREN((a, 6, "a")) -> HAS_PEREN
-// the last argument must not be a function-like macro
-// depends on: EXPAND_CAT, CHECK_IF_THING
-#define CHECK_FOR_PEREN(...) EXPAND_CAT(_PEREN_, CHECK_IF_THING(_CHECK_FOR_PEREN_A __VA_ARGS__))
-#define _CHECK_FOR_PEREN_A(...)
-#define _PEREN_A_THING NO_PEREN
-#define _PEREN_NOTHING HAS_PEREN
+// will cause error if no peren but the first args is peren pair (ex below)
+// CHECK_FOR_PEREN((), a, 6, "a") -> should be NO_PEREN but will throw error
+// depends on: EXPAND_CAT, EXPAND
+#define CHECK_FOR_PEREN(...) _CHECK_FOR_PEREN_C(EXPAND(_CHECK_FOR_PEREN_A __VA_ARGS__))
+#define _CHECK_FOR_PEREN_A(...) _CHECK_FOR_PEREN_B
+#define _OTHER_CHECK_FOR_PEREN_A _NO_PEREN(
+#define _OTHER_CHECK_FOR_PEREN_B _HAS_PEREN(
+#define _CHECK_FOR_PEREN_C(...) EXPAND_CAT(_OTHER, __VA_ARGS__) )
+#define _NO_PEREN(...) NO_PEREN
+#define _HAS_PEREN() HAS_PEREN
 
 // expands to the number of arguments; empty arguments are counted; zero arguments is handeled correctly
 // the last argument must not be a function-like macro
