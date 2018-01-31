@@ -12,8 +12,10 @@
 #define TO_STRING(a) #a
 
 // used internally by other macros
-#define ORDER_FWD(a, b) a b
-#define ORDER_BKWD(a, b) b a
+#define ORDER_FWD_2(a, b) a b
+#define ORDER_BKWD_2(a, b) b a
+#define ORDER_FWD_3(a, b, c) a b c
+#define ORDER_BKWD_3(a, b, c) c b a
 
 // expands the arguments and concatenates them
 // depends on: none
@@ -40,13 +42,11 @@
 // depends on: EXPAND_CALL, EXPAND_CAT, EXPAND
 // I realize how much of a clusterfuck this is. If you can make it cleaner without failing any tests, plz submit PR
 #define CHECK_IF_THING(...) _CHECK_IF_THING_A(EXPAND_CAT(_, EXPAND(_CHECK_IF_THING_D REMOVE_COMMAS(__VA_ARGS__))))
-#define _CHECK_IF_THING_A(a) EXPAND_CALL(_CHECK_IF_THING_C, _CHECK_IF_THING_B #a (), A_THING)
+#define _CHECK_IF_THING_A(a) EXPAND_CALL(_CHECK_IF_THING_C, _CHECK_IF_THING_B a (), A_THING)
 #define _CHECK_IF_THING_B() dummy, NOTHING
 #define _CHECK_IF_THING_C(a, b, ...) b
 #define _CHECK_IF_THING_D(...) dummy
 #define __CHECK_IF_THING_D
-
-#define CHECK_IF_THING_MACRO(a) 
 
 // checks if the argument(s) are completely surrounded by parenthesis
 // CHECK_FOR_PEREN() -> NO_PEREN
@@ -69,8 +69,8 @@
 #define _COUNT_THINGS_NOTHING(...) 0
 #define _COUNT_THINGS_A_THING(...) EXPAND_CALL(_AG_COUNT_THINGS, __VA_ARGS__, _AG_COUNT_THINGS_NUMBERS)
 
-#define REPEAT(macro, count) _AG_REPEAT_##count(macro, ORDER_FWD)
-#define REPEAT_DOWN(macro, count) _AG_REPEAT_##count(macro, ORDER_BKWD)
+#define REPEAT(macro, count) _AG_REPEAT_##count(macro, ORDER_FWD_2)
+#define REPEAT_DOWN(macro, count) _AG_REPEAT_##count(macro, ORDER_BKWD_2)
 
 // applies the given macro to all additional arguments
 // macro should accept item and index
@@ -78,10 +78,10 @@
 // MAP_REVERSE: items are in reverse order
 // MAP_REVERSE_DOWN: both
 // depends on: EXPAND_CAT, COUNT_THINGS, CHECK_FOR_PEREN, INC_.. (auto generated), DEC_.. (auto generated)
-#define MAP(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(_MAP_GET(func, MACRO), _MAP_GET(macro, JOINER), ORDER_FWD, 0, INC_, __VA_ARGS__)
-#define MAP_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(func,, ORDER_FWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(func,, ORDER_BKWD, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(func,, ORDER_BKWD, 0, INC_, __VA_ARGS__)
+#define MAP(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(_MAP_GET(func, MACRO), _MAP_GET(macro, JOINER), ORDER_FWD_3, 0, INC_, __VA_ARGS__)
+#define MAP_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(func,, ORDER_FWD_3, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(func,, ORDER_BKWD_3, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(func,, ORDER_BKWD_3, 0, INC_, __VA_ARGS__)
 #define _MAP_GET(func, item) EXPAND_CAT(_MAP_FUNC_, CHECK_FOR_PEREN(func)) (func, item)
 #define _MAP_FUNC_HAS_PEREN(func, item) _MAP_FUNC_HAS_PEREN_##item func
 #define _MAP_FUNC_HAS_PEREN_MACRO(macro, joiner) macro
