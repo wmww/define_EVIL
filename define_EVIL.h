@@ -82,10 +82,10 @@
 // MAP_REVERSE: items are in reverse order
 // MAP_REVERSE_DOWN: both
 // depends on: EXPAND_CAT, COUNT_THINGS, CHECK_FOR_PEREN, INC_.. (auto generated), DEC_.. (auto generated)
-#define MAP(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(_MAP_GET(func, MACRO), _MAP_GET(macro, JOINER), ORDER_FWD_3, 0, INC_, __VA_ARGS__)
-#define MAP_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(func,, ORDER_FWD_3, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(func,, ORDER_BKWD_3, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(func,, ORDER_BKWD_3, 0, INC_, __VA_ARGS__)
+#define MAP(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(_MAP_GET(func, MACRO), _MAP_GET(func, JOINER), ORDER_FWD_3, 0, INC_, __VA_ARGS__)
+#define MAP_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(_MAP_GET(func, MACRO), _MAP_GET(func, JOINER), ORDER_FWD_3, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(_MAP_GET(func, MACRO), _MAP_GET(func, JOINER), ORDER_BKWD_3, EXPAND_CAT(DEC_, COUNT_THINGS(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT_THINGS(__VA_ARGS__))(_MAP_GET(func, MACRO), _MAP_GET(func, JOINER), ORDER_BKWD_3, 0, INC_, __VA_ARGS__)
 #define _MAP_GET(func, item) EXPAND_CAT(_MAP_FUNC_, CHECK_FOR_PEREN(func)) (func, item)
 #define _MAP_FUNC_HAS_PEREN(func, item) _MAP_FUNC_HAS_PEREN_##item func
 #define _MAP_FUNC_HAS_PEREN_MACRO(macro, joiner) macro
