@@ -81,13 +81,15 @@
 
 // Equality
 
-// expand to if a thing is '0'
-#define EQ_0(...) NOT(IS_THING(EXPAND_CAT(_EQ_0_, __VA_ARGS__)))
-#define _EQ_0_0
+// expand if the two things are equal, only works if there is an ENABLE_EQ_*_* defined
+#define EQ(a, b) NOT(IS_THING(EXPAND_CAT(ENABLE_EQ_, EXPAND_CAT(a, EXPAND_CAT(_, b)))))
 
-// expand to if a thing is '1'
-#define EQ_1(...) NOT(IS_THING(EXPAND_CAT(_EQ_1_, __VA_ARGS__)))
-#define _EQ_1_1
+// enable equality check for various common values, you can add more elsewhere
+#define ENABLE_EQ_TRUE_TRUE
+#define ENABLE_EQ_FALSE_FALSE
+#define ENABLE_EQ_0_0
+#define ENABLE_EQ_1_1
+#define ENABLE_EQ_void_void
 
 // Get Info
 

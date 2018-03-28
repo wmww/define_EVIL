@@ -3,11 +3,11 @@
 
 #define EMPTY_MACRO
 #define PUT_IN_BRAC(a, i) [i: a]
-#define PUT_IN_BRAC_DIVIDER(a, i) IF(NOT(EQ_0(i)))(|) [i: a]
-#define PUT_IN_BRAC_DIVIDER_DOWN(a, i) [i: a] IF(NOT(EQ_0(i)))(|)
+#define PUT_IN_BRAC_DIVIDER(a, i) IF(NOT(EQ(0, i)))(|) [i: a]
+#define PUT_IN_BRAC_DIVIDER_DOWN(a, i) [i: a] IF(NOT(EQ(0, i)))(|)
 #define ADD_T(i) T_##i
-#define ADD_T_DIVIDER(i) IF(NOT(EQ_0(i)))(|) T_##i
-#define ADD_T_DIVIDER_DOWN(i) T_##i IF(NOT(EQ_0(i)))(|)
+#define ADD_T_DIVIDER(i) IF(NOT(EQ(0, i)))(|) T_##i
+#define ADD_T_DIVIDER_DOWN(i) T_##i IF(NOT(EQ(0, i)))(|)
 #define COMMA ,
 
 int main()
@@ -77,14 +77,15 @@ int main()
 	std::cout << std::endl;
 	
 	std::cout << "Equality:" << std::endl;
-	TEST_CASE_MACRO(EQ_0(), FALSE);
-	TEST_CASE_MACRO(EQ_0(1), FALSE);
-	TEST_CASE_MACRO(EQ_0(x, y), FALSE);
-	TEST_CASE_MACRO(EQ_0(0), TRUE);
-	TEST_CASE_MACRO(EQ_1(), FALSE);
-	TEST_CASE_MACRO(EQ_1(0), FALSE);
-	TEST_CASE_MACRO(EQ_1(x, y), FALSE);
-	TEST_CASE_MACRO(EQ_1(1), TRUE);
+	TEST_CASE_MACRO(EQ(0, 1), FALSE);
+	TEST_CASE_MACRO(EQ(1, 0), FALSE);
+	TEST_CASE_MACRO(EQ(1, 1), TRUE);
+	TEST_CASE_MACRO(EQ(0, 0), TRUE);
+	TEST_CASE_MACRO(EQ(TRUE, FALSE), FALSE);
+	TEST_CASE_MACRO(EQ(FALSE, FALSE), TRUE);
+	TEST_CASE_MACRO(EQ(TRUE, TRUE), TRUE);
+	TEST_CASE_MACRO(EQ(void, void), TRUE);
+	TEST_CASE_MACRO(EQ(void, 0), FALSE);
 	std::cout << std::endl;
 	
 	std::cout << "IS_THING:" << std::endl;
