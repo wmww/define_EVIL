@@ -72,6 +72,17 @@ int main()
 	TEST_CASE_MACRO(IF_ELSE(XOR(AND(NOT(FALSE), FALSE), TRUE))(a)(b), a);
 	std::cout << std::endl;
 	
+	std::cout << "Equality:" << std::endl;
+	TEST_CASE_MACRO(EQ_0(), FALSE);
+	TEST_CASE_MACRO(EQ_0(1), FALSE);
+	TEST_CASE_MACRO(EQ_0(x, y), FALSE);
+	TEST_CASE_MACRO(EQ_0(0), TRUE);
+	TEST_CASE_MACRO(EQ_1(), FALSE);
+	TEST_CASE_MACRO(EQ_1(0), FALSE);
+	TEST_CASE_MACRO(EQ_1(x, y), FALSE);
+	TEST_CASE_MACRO(EQ_1(1), TRUE);
+	std::cout << std::endl;
+	
 	std::cout << "IS_THING:" << std::endl;
 	TEST_CASE_MACRO(IS_THING(a_thing), TRUE);
 	TEST_CASE_MACRO(IS_THING("abc"), TRUE);

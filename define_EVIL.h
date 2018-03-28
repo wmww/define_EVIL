@@ -25,6 +25,7 @@
 // expands the arguments and then call macro with the expanded arguments
 // depends on: none
 #define EXPAND_CALL(macro, ...) macro(__VA_ARGS__)
+#define EXPAND_CALL_1(macro, a) macro(a)
 
 // even I'm not completely sure why this is needed, but it is.
 #define EXPAND(...) __VA_ARGS__
@@ -41,23 +42,27 @@
 // expand to result of boolean logic (NOT(a), OR(a, b), AND(a, b), XOR(a, b))
 // only defined for input TRUE and FALSE
 
-#define NOT(a) EXPAND_CAT(_BOOL_NOT_, a)
+#define NOT(...) _NOT(__VA_ARGS__)
+#define _NOT(a) EXPAND_CAT(_BOOL_NOT_, a)
 #define _BOOL_NOT_TRUE FALSE
 #define _BOOL_NOT_FALSE TRUE
 
-#define OR(a, b) EXPAND_CAT(_BOOL_OR_, EXPAND_CAT(a, EXPAND_CAT(_, b)))
+#define OR(...) _OR(__VA_ARGS__)
+#define _OR(a, b) EXPAND_CAT(_BOOL_OR_, EXPAND_CAT(a, EXPAND_CAT(_, b)))
 #define _BOOL_OR_FALSE_FALSE FALSE
 #define _BOOL_OR_TRUE_FALSE TRUE
 #define _BOOL_OR_FALSE_TRUE TRUE
 #define _BOOL_OR_TRUE_TRUE TRUE
 
-#define AND(a, b) EXPAND_CAT(_BOOL_AND_, EXPAND_CAT(a, EXPAND_CAT(_, b)))
+#define AND(...) _AND(__VA_ARGS__)
+#define _AND(a, b) EXPAND_CAT(_BOOL_AND_, EXPAND_CAT(a, EXPAND_CAT(_, b)))
 #define _BOOL_AND_FALSE_FALSE FALSE
 #define _BOOL_AND_TRUE_FALSE FALSE
 #define _BOOL_AND_FALSE_TRUE FALSE
 #define _BOOL_AND_TRUE_TRUE TRUE
 
-#define XOR(a, b) EXPAND_CAT(_BOOL_XOR_, EXPAND_CAT(a, EXPAND_CAT(_, b)))
+#define XOR(...) _XOR(__VA_ARGS__)
+#define _XOR(a, b) EXPAND_CAT(_BOOL_XOR_, EXPAND_CAT(a, EXPAND_CAT(_, b)))
 #define _BOOL_XOR_FALSE_FALSE FALSE
 #define _BOOL_XOR_TRUE_FALSE TRUE
 #define _BOOL_XOR_FALSE_TRUE TRUE
@@ -75,6 +80,13 @@
 #define IF_ELSE(cond) EXPAND_CAT(_IF_ELSE_, cond)
 #define _IF_ELSE_TRUE(...) __VA_ARGS__ EXPAND_FALSE
 #define _IF_ELSE_FALSE(...) EXPAND_TRUE
+
+// Equality
+#define EQ_0(...) NOT(IS_THING(EXPAND_CAT(_EQ_0_, __VA_ARGS__)))
+#define _EQ_0_0
+
+#define EQ_1(...) NOT(IS_THING(EXPAND_CAT(_EQ_1_, __VA_ARGS__)))
+#define _EQ_1_1
 
 // Get Info
 
