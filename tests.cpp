@@ -115,12 +115,14 @@ int main()
 	TEST_CASE_MACRO(HAS_PEREN((), 1, "a"), FALSE);
 	std::cout << std::endl;
 	
+	/*
 	std::cout << "GET_ITEM:" << std::endl;
 	TEST_CASE_MACRO(GET_ITEM(PUT_IN_BRAC, FIRST), PUT_IN_BRAC);
 	TEST_CASE_MACRO(GET_ITEM(PUT_IN_BRAC, SECOND), );
 	TEST_CASE_MACRO(GET_ITEM((PUT_IN_BRAC, |), FIRST), PUT_IN_BRAC);
 	TEST_CASE_MACRO(GET_ITEM((PUT_IN_BRAC, |), SECOND), |);
 	std::cout << std::endl;
+	*/
 	
 	std::cout << "REPEAT:" << std::endl;
 	TEST_CASE_MACRO(REPEAT(ADD_T, 0), );

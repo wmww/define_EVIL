@@ -12,10 +12,8 @@
 #define TO_STRING(...) #__VA_ARGS__
 
 // used internally by other macros
-#define ORDER_FWD_2(a, b) a b
-#define ORDER_BKWD_2(a, b) b a
-#define ORDER_FWD_3(a, b, c) a b c
-#define ORDER_BKWD_3(a, b, c) c b a
+#define ORDER_FORWARD(a, b) a b
+#define ORDER_BACKWARD(a, b) b a
 
 // expands the arguments and concatenates them
 // depends on: none
@@ -129,6 +127,7 @@
 #define _COUNT_FALSE(...) 0
 #define _COUNT_TRUE(...) EXPAND_CALL(_AG_COUNT, __VA_ARGS__, _AG_COUNT_NUMBERS)
 
+/*
 // GET_ITEM(abc, FIRST) -> abc
 // GET_ITEM(abc, SECOND) -> [empty]
 // GET_ITEM((abc, xyz), FIRST) -> abc
@@ -141,22 +140,23 @@
 #define _GET_ITEM_FALSE(func, item) _GET_ITEM_FALSE_##item (func)
 #define _GET_ITEM_FALSE_FIRST(func) func
 #define _GET_ITEM_FALSE_SECOND(func)
+*/
 
 // Many Items
 
-#define REPEAT(func, count) _AG_REPEAT_##count(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_FWD_3)
-#define REPEAT_DOWN(func, count) _AG_REPEAT_##count(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_BKWD_3)
+#define REPEAT(func, count) _AG_REPEAT_##count(func, ORDER_FORWARD)
+#define REPEAT_DOWN(func, count) _AG_REPEAT_##count(func, ORDER_BACKWARD)
 
 // applies the given macro to all additional arguments
 // macro should accept item and index
 // MAP_DOWN: indexes count down to 0 instead of up from 0
 // MAP_REVERSE: items are in reverse order
 // MAP_REVERSE_DOWN: both
-// depends on: EXPAND_CAT, COUNT_THINGS, CHECK_FOR_PEREN, INC_.. (auto generated), DEC_.. (auto generated)
-#define MAP(func, ...) EXPAND_CAT(_AG_MAP_, COUNT(__VA_ARGS__))(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_FWD_3, 0, INC_, __VA_ARGS__)
-#define MAP_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT(__VA_ARGS__))(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_FWD_3, EXPAND_CAT(DEC_, COUNT(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE(func, ...) EXPAND_CAT(_AG_MAP_, COUNT(__VA_ARGS__))(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_BKWD_3, EXPAND_CAT(DEC_, COUNT(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT(__VA_ARGS__))(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_BKWD_3, 0, INC_, __VA_ARGS__)
+// depends on: EXPAND_CAT, COUNT, INC_.. (auto generated), DEC_.. (auto generated)
+#define MAP(func, ...) EXPAND_CAT(_AG_MAP_, COUNT(__VA_ARGS__))(func, ORDER_FORWARD, 0, INC_, __VA_ARGS__)
+#define MAP_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT(__VA_ARGS__))(func, ORDER_FORWARD, EXPAND_CAT(DEC_, COUNT(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE(func, ...) EXPAND_CAT(_AG_MAP_, COUNT(__VA_ARGS__))(func, ORDER_BACKWARD, EXPAND_CAT(DEC_, COUNT(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT(__VA_ARGS__))(func, ORDER_BACKWARD, 0, INC_, __VA_ARGS__)
 
 // Tests
 
