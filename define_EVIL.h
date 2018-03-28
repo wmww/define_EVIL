@@ -80,9 +80,12 @@
 #define _IF_ELSE_FALSE(...) EXPAND_TRUE
 
 // Equality
+
+// expand to if a thing is '0'
 #define EQ_0(...) NOT(IS_THING(EXPAND_CAT(_EQ_0_, __VA_ARGS__)))
 #define _EQ_0_0
 
+// expand to if a thing is '1'
 #define EQ_1(...) NOT(IS_THING(EXPAND_CAT(_EQ_1_, __VA_ARGS__)))
 #define _EQ_1_1
 
@@ -117,15 +120,15 @@
 #define _OTHER_HAS_PEREN_B _YES_PEREN(
 #define _HAS_PEREN_C(...) EXPAND_CAT(_OTHER, __VA_ARGS__) )
 #define _NO_PEREN(...) FALSE
-#define _YES_PEREN(...) EXPAND_CALL(NOT, IS_THING(__VA_ARGS__))
+#define _YES_PEREN(...) NOT(IS_THING(__VA_ARGS__))
 
 // expands to the number of arguments; empty arguments are counted; zero arguments is handeled correctly
 // the last argument must not be a function-like macro
 // expands to the number of arguments; empty arguments are counted; zero arguments is handled correctly
 // depends on: EXPAND_CAT, EXPAND_CALL, IS_THING, _AG_COUNT, _AG_COUNT_NUMBERS
-#define COUNT(...) EXPAND_CAT(_COUNT_, IS_THING(__VA_ARGS__))(__VA_ARGS__)
-#define _COUNT_FALSE(...) 0
-#define _COUNT_TRUE(...) EXPAND_CALL(_AG_COUNT, __VA_ARGS__, _AG_COUNT_NUMBERS)
+#define COUNT(...) IF_ELSE(IS_THING(__VA_ARGS__)) \
+						(EXPAND_CALL(_AG_COUNT, __VA_ARGS__, _AG_COUNT_NUMBERS)) \
+						(0)
 
 /*
 // GET_ITEM(abc, FIRST) -> abc
