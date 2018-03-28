@@ -3,7 +3,7 @@
 
 // macros auto-generated from autogen.sh
 // should all be prefixed with _AG_
-#include "autogen.h"
+#include "generated.h"
 
 /// General Utils
 
@@ -33,8 +33,8 @@
 #define EXPAND_FALSE(...)
 
 // removes commas in a list of arguments, leaves a space between each one
-// depends on: _AG_REMOVE_COMMAS_...
-#define REMOVE_COMMAS(...) _AG_REMOVE_COMMAS_0(__VA_ARGS__)
+// depends on: _GEN_REMOVE_COMMAS_...
+#define REMOVE_COMMAS(...) _GEN_REMOVE_COMMAS_0(__VA_ARGS__)
 
 // BOOL
 // expand to result of boolean logic (NOT(a), OR(a, b), AND(a, b), XOR(a, b))
@@ -125,9 +125,9 @@
 // expands to the number of arguments; empty arguments are counted; zero arguments is handeled correctly
 // the last argument must not be a function-like macro
 // expands to the number of arguments; empty arguments are counted; zero arguments is handled correctly
-// depends on: EXPAND_CAT, EXPAND_CALL, IS_THING, _AG_COUNT, _AG_COUNT_NUMBERS
+// depends on: EXPAND_CAT, EXPAND_CALL, IS_THING, _GEN_COUNT, _GEN_COUNT_NUMBERS
 #define COUNT(...) IF_ELSE(IS_THING(__VA_ARGS__)) \
-						(EXPAND_CALL(_AG_COUNT, __VA_ARGS__, _AG_COUNT_NUMBERS)) \
+						(EXPAND_CALL(_GEN_COUNT, __VA_ARGS__, _GEN_COUNT_NUMBERS)) \
 						(0)
 
 /*
@@ -147,8 +147,8 @@
 
 // Many Items
 
-#define REPEAT(func, count) _AG_REPEAT_##count(func, ORDER_FORWARD)
-#define REPEAT_DOWN(func, count) _AG_REPEAT_##count(func, ORDER_BACKWARD)
+#define REPEAT(func, count) _GEN_REPEAT_##count(func, ORDER_FORWARD)
+#define REPEAT_DOWN(func, count) _GEN_REPEAT_##count(func, ORDER_BACKWARD)
 
 // applies the given macro to all additional arguments
 // macro should accept item and index
@@ -156,10 +156,10 @@
 // MAP_REVERSE: items are in reverse order
 // MAP_REVERSE_DOWN: both
 // depends on: EXPAND_CAT, COUNT, INC_.. (auto generated), DEC_.. (auto generated)
-#define MAP(func, ...) EXPAND_CAT(_AG_MAP_, COUNT(__VA_ARGS__))(func, ORDER_FORWARD, 0, INC_, __VA_ARGS__)
-#define MAP_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT(__VA_ARGS__))(func, ORDER_FORWARD, EXPAND_CAT(DEC_, COUNT(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE(func, ...) EXPAND_CAT(_AG_MAP_, COUNT(__VA_ARGS__))(func, ORDER_BACKWARD, EXPAND_CAT(DEC_, COUNT(__VA_ARGS__)), DEC_, __VA_ARGS__)
-#define MAP_REVERSE_DOWN(func, ...) EXPAND_CAT(_AG_MAP_, COUNT(__VA_ARGS__))(func, ORDER_BACKWARD, 0, INC_, __VA_ARGS__)
+#define MAP(func, ...) EXPAND_CAT(_GEN_MAP_, COUNT(__VA_ARGS__))(func, ORDER_FORWARD, 0, INC_, __VA_ARGS__)
+#define MAP_DOWN(func, ...) EXPAND_CAT(_GEN_MAP_, COUNT(__VA_ARGS__))(func, ORDER_FORWARD, EXPAND_CAT(DEC_, COUNT(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE(func, ...) EXPAND_CAT(_GEN_MAP_, COUNT(__VA_ARGS__))(func, ORDER_BACKWARD, EXPAND_CAT(DEC_, COUNT(__VA_ARGS__)), DEC_, __VA_ARGS__)
+#define MAP_REVERSE_DOWN(func, ...) EXPAND_CAT(_GEN_MAP_, COUNT(__VA_ARGS__))(func, ORDER_BACKWARD, 0, INC_, __VA_ARGS__)
 
 // Tests
 
