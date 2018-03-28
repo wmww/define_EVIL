@@ -5,6 +5,10 @@
 // should all be prefixed with _AG_
 #include "autogen.h"
 
+#define BOOL_NOT(a) _BOOL_NOT_##a
+#define _BOOL_NOT_TRUE FALSE
+#define _BOOL_NOT_FALSE TRUE
+
 /// General Utils
 
 // convert input to string literal, can be used with EXPAND_CALL
@@ -33,8 +37,8 @@
 // depends on: _AG_REMOVE_COMMAS_...
 #define REMOVE_COMMAS(...) _AG_REMOVE_COMMAS_0(__VA_ARGS__)
 
-// IS_THING(one_or_more, args)	-> A_THING
-// IS_THING()						-> NOTHING
+// IS_THING(one_or_more, args)	-> TRUE
+// IS_THING()					-> FALSE
 // NOTE: the final arg can not be the name of a function-like macro!
 // a common way to use is to make two macros (ex. EXAMPLE_TRUE and EXAMPLE_FALSE) and concat your prefix with the
 // result of this macro, so you can do different things depending on the thingyness
@@ -49,13 +53,12 @@
 #define __IS_THING_D
 
 // checks if the argument(s) are completely surrounded by parenthesis
-// HAS_PEREN() -> NO_PEREN
-// HAS_PEREN("a") -> NO_PEREN
-// HAS_PEREN(6, "a") -> NO_PEREN
-// HAS_PEREN(()) -> HAS_PEREN
-// HAS_PEREN((a, 6, "a")) -> HAS_PEREN
-// will cause error if no peren but the first args is peren pair (ex below)
-// HAS_PEREN((), a, 6, "a") -> should be NO_PEREN but will throw error
+// HAS_PEREN() -> FALSE
+// HAS_PEREN("a") -> FALSE
+// HAS_PEREN(6, "a") -> FALSE
+// HAS_PEREN((), a, 6, "a") -> FALSE
+// HAS_PEREN(()) -> TRUE
+// HAS_PEREN((a, 6, "a")) -> TRUE
 // depends on: EXPAND_CAT, EXPAND
 #define HAS_PEREN(...) _HAS_PEREN_C(EXPAND(_HAS_PEREN_A __VA_ARGS__))
 #define _HAS_PEREN_A(...) _HAS_PEREN_B
@@ -63,7 +66,7 @@
 #define _OTHER_HAS_PEREN_B _YES_PEREN(
 #define _HAS_PEREN_C(...) EXPAND_CAT(_OTHER, __VA_ARGS__) )
 #define _NO_PEREN(...) FALSE
-#define _YES_PEREN() TRUE
+#define _YES_PEREN(...) EXPAND_CALL(BOOL_NOT, IS_THING(__VA_ARGS__))
 
 // expands to the number of arguments; empty arguments are counted; zero arguments is handeled correctly
 // the last argument must not be a function-like macro

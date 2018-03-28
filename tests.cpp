@@ -56,8 +56,7 @@ int main()
 	TEST_CASE_MACRO(HAS_PEREN(()), TRUE);
 	TEST_CASE_MACRO(HAS_PEREN(((a))), TRUE);
 	TEST_CASE_MACRO(HAS_PEREN((1, "a", ())), TRUE);
-	// will fail:
-	// TEST_CASE_MACRO(CHECK_FOR_PEREN((), 1, "a"), NO_PEREN);
+	TEST_CASE_MACRO(HAS_PEREN((), 1, "a"), FALSE);
 	std::cout << std::endl;
 	
 	std::cout << "GET_ITEM:" << std::endl;
