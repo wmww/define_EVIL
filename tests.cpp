@@ -3,7 +3,11 @@
 
 #define EMPTY_MACRO
 #define PUT_IN_BRAC(a, i) [i: a]
+#define PUT_IN_BRAC_DIVIDER(a, i) IF(NOT(EQ_0(i)))(|) [i: a]
+#define PUT_IN_BRAC_DIVIDER_DOWN(a, i) [i: a] IF(NOT(EQ_0(i)))(|)
 #define ADD_T(i) T_##i
+#define ADD_T_DIVIDER(i) IF(NOT(EQ_0(i)))(|) T_##i
+#define ADD_T_DIVIDER_DOWN(i) T_##i IF(NOT(EQ_0(i)))(|)
 #define COMMA ,
 
 int main()
@@ -125,12 +129,12 @@ int main()
 	TEST_CASE_MACRO(REPEAT_DOWN(ADD_T, 0), );
 	TEST_CASE_MACRO(REPEAT_DOWN(ADD_T, 1), T_0);
 	TEST_CASE_MACRO(REPEAT_DOWN(ADD_T, 4), T_3 T_2 T_1 T_0);
-	TEST_CASE_MACRO(REPEAT((ADD_T, |), 0), );
-	TEST_CASE_MACRO(REPEAT((ADD_T, |), 1), T_0);
-	TEST_CASE_MACRO(REPEAT((ADD_T, |), 4), T_0 | T_1 | T_2 | T_3);
-	TEST_CASE_MACRO(REPEAT_DOWN((ADD_T, |), 0), );
-	TEST_CASE_MACRO(REPEAT_DOWN((ADD_T, |), 1), T_0);
-	TEST_CASE_MACRO(REPEAT_DOWN((ADD_T, |), 4), T_3 | T_2 | T_1 | T_0);
+	TEST_CASE_MACRO(REPEAT(ADD_T_DIVIDER, 0), );
+	TEST_CASE_MACRO(REPEAT(ADD_T_DIVIDER, 1), T_0);
+	TEST_CASE_MACRO(REPEAT(ADD_T_DIVIDER, 4), T_0 | T_1 | T_2 | T_3);
+	TEST_CASE_MACRO(REPEAT_DOWN(ADD_T_DIVIDER_DOWN, 0), );
+	TEST_CASE_MACRO(REPEAT_DOWN(ADD_T_DIVIDER_DOWN, 1), T_0);
+	TEST_CASE_MACRO(REPEAT_DOWN(ADD_T_DIVIDER_DOWN, 4), T_3 | T_2 | T_1 | T_0);
 	std::cout << std::endl;
 	
 	std::cout << "MAP:" << std::endl;
@@ -151,21 +155,21 @@ int main()
 	TEST_CASE_MACRO(MAP_REVERSE_DOWN(PUT_IN_BRAC, a), [0: a]);
 	TEST_CASE_MACRO(MAP_REVERSE_DOWN(PUT_IN_BRAC), );
 	
-	TEST_CASE_MACRO(MAP((PUT_IN_BRAC, |), a, b, c, d), [0: a] | [1: b] | [2: c] | [3: d]);
-	TEST_CASE_MACRO(MAP((PUT_IN_BRAC, |), a), [0: a]);
-	TEST_CASE_MACRO(MAP((PUT_IN_BRAC, |)), );
+	TEST_CASE_MACRO(MAP(PUT_IN_BRAC_DIVIDER, a, b, c, d), [0: a] | [1: b] | [2: c] | [3: d]);
+	TEST_CASE_MACRO(MAP(PUT_IN_BRAC_DIVIDER, a), [0: a]);
+	TEST_CASE_MACRO(MAP(PUT_IN_BRAC_DIVIDER), );
 
-	TEST_CASE_MACRO(MAP_REVERSE((PUT_IN_BRAC, |), a, b, c, d), [0: d] | [1: c] | [2: b] | [3: a]);
-	TEST_CASE_MACRO(MAP_REVERSE((PUT_IN_BRAC, |), a), [0: a]);
-	TEST_CASE_MACRO(MAP_REVERSE((PUT_IN_BRAC, |)), );
+	TEST_CASE_MACRO(MAP_REVERSE(PUT_IN_BRAC_DIVIDER, a, b, c, d), [0: d] | [1: c] | [2: b] | [3: a]);
+	TEST_CASE_MACRO(MAP_REVERSE(PUT_IN_BRAC_DIVIDER, a), [0: a]);
+	TEST_CASE_MACRO(MAP_REVERSE(PUT_IN_BRAC_DIVIDER), );
 
-	TEST_CASE_MACRO(MAP_DOWN((PUT_IN_BRAC, |), a, b, c, d), [3: a] | [2: b] | [1: c] | [0: d]);
-	TEST_CASE_MACRO(MAP_DOWN((PUT_IN_BRAC, |), a), [0: a]);
-	TEST_CASE_MACRO(MAP_DOWN((PUT_IN_BRAC, |)), );
+	TEST_CASE_MACRO(MAP_DOWN(PUT_IN_BRAC_DIVIDER_DOWN, a, b, c, d), [3: a] | [2: b] | [1: c] | [0: d]);
+	TEST_CASE_MACRO(MAP_DOWN(PUT_IN_BRAC_DIVIDER_DOWN, a), [0: a]);
+	TEST_CASE_MACRO(MAP_DOWN(PUT_IN_BRAC_DIVIDER_DOWN), );
 
-	TEST_CASE_MACRO(MAP_REVERSE_DOWN((PUT_IN_BRAC, -), a, b, c, d), [3: d] - [2: c] - [1: b] - [0: a]);
-	TEST_CASE_MACRO(MAP_REVERSE_DOWN((PUT_IN_BRAC, -), a), [0: a]);
-	TEST_CASE_MACRO(MAP_REVERSE_DOWN((PUT_IN_BRAC, -)), );
+	TEST_CASE_MACRO(MAP_REVERSE_DOWN(PUT_IN_BRAC_DIVIDER_DOWN, a, b, c, d), [3: d] | [2: c] | [1: b] | [0: a]);
+	TEST_CASE_MACRO(MAP_REVERSE_DOWN(PUT_IN_BRAC_DIVIDER_DOWN, a), [0: a]);
+	TEST_CASE_MACRO(MAP_REVERSE_DOWN(PUT_IN_BRAC_DIVIDER_DOWN), );
 	std::cout << std::endl;
 	
 	std::cout << "COUNT:" << std::endl;
