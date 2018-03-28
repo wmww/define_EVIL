@@ -5,10 +5,6 @@
 // should all be prefixed with _AG_
 #include "autogen.h"
 
-#define BOOL_NOT(a) _BOOL_NOT_##a
-#define _BOOL_NOT_TRUE FALSE
-#define _BOOL_NOT_FALSE TRUE
-
 /// General Utils
 
 // convert input to string literal, can be used with EXPAND_CALL
@@ -36,6 +32,34 @@
 // removes commas in a list of arguments, leaves a space between each one
 // depends on: _AG_REMOVE_COMMAS_...
 #define REMOVE_COMMAS(...) _AG_REMOVE_COMMAS_0(__VA_ARGS__)
+
+// BOOL
+// boolean logic BOOL_NOT(a), BOOL_OR(a, b), BOOL_AND(a, b), BOOL_XOR(a, b)
+// only defined when sent TRUE or FALSE, and they expand to result
+
+#define NOT(a) EXPAND_CAT(_BOOL_NOT_, a)
+#define _BOOL_NOT_TRUE FALSE
+#define _BOOL_NOT_FALSE TRUE
+
+#define OR(a, b) EXPAND_CAT(_BOOL_OR_, EXPAND_CAT(a, EXPAND_CAT(_, b)))
+#define _BOOL_OR_FALSE_FALSE FALSE
+#define _BOOL_OR_TRUE_FALSE TRUE
+#define _BOOL_OR_FALSE_TRUE TRUE
+#define _BOOL_OR_TRUE_TRUE TRUE
+
+#define AND(a, b) EXPAND_CAT(_BOOL_AND_, EXPAND_CAT(a, EXPAND_CAT(_, b)))
+#define _BOOL_AND_FALSE_FALSE FALSE
+#define _BOOL_AND_TRUE_FALSE FALSE
+#define _BOOL_AND_FALSE_TRUE FALSE
+#define _BOOL_AND_TRUE_TRUE TRUE
+
+#define XOR(a, b) EXPAND_CAT(_BOOL_XOR_, EXPAND_CAT(a, EXPAND_CAT(_, b)))
+#define _BOOL_XOR_FALSE_FALSE FALSE
+#define _BOOL_XOR_TRUE_FALSE TRUE
+#define _BOOL_XOR_FALSE_TRUE TRUE
+#define _BOOL_XOR_TRUE_TRUE FALSE
+
+// Get Info
 
 // IS_THING(one_or_more, args)	-> TRUE
 // IS_THING()					-> FALSE
@@ -66,7 +90,7 @@
 #define _OTHER_HAS_PEREN_B _YES_PEREN(
 #define _HAS_PEREN_C(...) EXPAND_CAT(_OTHER, __VA_ARGS__) )
 #define _NO_PEREN(...) FALSE
-#define _YES_PEREN(...) EXPAND_CALL(BOOL_NOT, IS_THING(__VA_ARGS__))
+#define _YES_PEREN(...) EXPAND_CALL(NOT, IS_THING(__VA_ARGS__))
 
 // expands to the number of arguments; empty arguments are counted; zero arguments is handeled correctly
 // the last argument must not be a function-like macro
@@ -88,6 +112,8 @@
 #define _GET_ITEM_FALSE(func, item) _GET_ITEM_FALSE_##item (func)
 #define _GET_ITEM_FALSE_FIRST(func) func
 #define _GET_ITEM_FALSE_SECOND(func)
+
+// Many Items
 
 #define REPEAT(func, count) _AG_REPEAT_##count(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_FWD_3)
 #define REPEAT_DOWN(func, count) _AG_REPEAT_##count(GET_ITEM(func, FIRST), GET_ITEM(func, SECOND), ORDER_BKWD_3)
