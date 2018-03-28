@@ -21,6 +21,8 @@ int main()
 	TEST_CASE_MACRO(EXPAND_CAT(DEC_, 6), 5);
 	TEST_CASE_MACRO(EXPAND_CAT(DEC_, 1), 0);
 	TEST_CASE_MACRO(EXPAND_CAT(DEC_, 24), 23);
+	TEST_CASE_MACRO(EXPAND_TRUE(abc, xyz), abc, xyz);
+	TEST_CASE_MACRO(EXPAND_FALSE(abc, xyz), );
 	std::cout << std::endl;
 	
 	std::cout << "REMOVE_COMMAS:" << std::endl;
@@ -52,14 +54,22 @@ int main()
 	std::cout << std::endl;
 	
 	std::cout << "Conditionals:" << std::endl;
-	TEST_CASE_MACRO(IF(TRUE, ), );
-	TEST_CASE_MACRO(IF(FALSE, ), );
-	TEST_CASE_MACRO(IF(TRUE, abc()), abc());
-	TEST_CASE_MACRO(IF(FALSE, abc()), );
-	TEST_CASE_MACRO(IF(TRUE, x, y, z), x, y, z);
-	TEST_CASE_MACRO(IF(FALSE, x, y, z), );
-	TEST_CASE_MACRO(IF(NOT(TRUE), a), );
-	TEST_CASE_MACRO(IF(XOR(AND(NOT(FALSE), FALSE), TRUE), a), a);
+	TEST_CASE_MACRO(IF(TRUE)(), );
+	TEST_CASE_MACRO(IF(FALSE)(), );
+	TEST_CASE_MACRO(IF(TRUE)(abc()), abc());
+	TEST_CASE_MACRO(IF(FALSE)(abc()), );
+	TEST_CASE_MACRO(IF(TRUE)(x, y, z), x, y, z);
+	TEST_CASE_MACRO(IF(FALSE)(x, y, z), );
+	TEST_CASE_MACRO(IF(NOT(TRUE))(a), );
+	TEST_CASE_MACRO(IF(XOR(AND(NOT(FALSE), FALSE), TRUE))(a), a);
+	TEST_CASE_MACRO(IF_ELSE(TRUE)()(), );
+	TEST_CASE_MACRO(IF_ELSE(FALSE)()(), );
+	TEST_CASE_MACRO(IF_ELSE(TRUE)(abc())(xyz()), abc());
+	TEST_CASE_MACRO(IF_ELSE(FALSE)(abc())(xyz()), xyz());
+	TEST_CASE_MACRO(IF_ELSE(TRUE)(x, y, z)(a, b, c), x, y, z);
+	TEST_CASE_MACRO(IF_ELSE(FALSE)(x, y, z)(a, b, c), a, b, c);
+	TEST_CASE_MACRO(IF_ELSE(NOT(TRUE))(a)(b), b);
+	TEST_CASE_MACRO(IF_ELSE(XOR(AND(NOT(FALSE), FALSE), TRUE))(a)(b), a);
 	std::cout << std::endl;
 	
 	std::cout << "IS_THING:" << std::endl;

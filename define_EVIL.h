@@ -29,13 +29,17 @@
 // even I'm not completely sure why this is needed, but it is.
 #define EXPAND(...) __VA_ARGS__
 
+// toggleable expansion
+#define EXPAND_TRUE(...) __VA_ARGS__
+#define EXPAND_FALSE(...)
+
 // removes commas in a list of arguments, leaves a space between each one
 // depends on: _AG_REMOVE_COMMAS_...
 #define REMOVE_COMMAS(...) _AG_REMOVE_COMMAS_0(__VA_ARGS__)
 
 // BOOL
-// boolean logic BOOL_NOT(a), BOOL_OR(a, b), BOOL_AND(a, b), BOOL_XOR(a, b)
-// only defined when sent TRUE or FALSE, and they expand to result
+// expand to result of boolean logic (NOT(a), OR(a, b), AND(a, b), XOR(a, b))
+// only defined for input TRUE and FALSE
 
 #define NOT(a) EXPAND_CAT(_BOOL_NOT_, a)
 #define _BOOL_NOT_TRUE FALSE
@@ -60,10 +64,17 @@
 #define _BOOL_XOR_TRUE_TRUE FALSE
 
 // Conditionals
+// only defined for input TRUE and FALSE
 
-#define IF(cond, ...) EXPAND_CAT(_IF_A_, cond)(__VA_ARGS__)
-#define _IF_A_TRUE(...) __VA_ARGS__
-#define _IF_A_FALSE(...)
+// IF(TRUE)(abc)	-> abc
+// IF(FALSE)(abc)	-> [empty]
+#define IF(cond) EXPAND_CAT(EXPAND_, cond)
+
+// IF_ELSE(TRUE)(abc)(xyz)	-> abc
+// IF_ELSE(FALSE)(abc)(xyz)	-> xyz
+#define IF_ELSE(cond) EXPAND_CAT(_IF_ELSE_, cond)
+#define _IF_ELSE_TRUE(...) __VA_ARGS__ EXPAND_FALSE
+#define _IF_ELSE_FALSE(...) EXPAND_TRUE
 
 // Get Info
 
