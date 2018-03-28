@@ -95,6 +95,8 @@ int main()
 	TEST_CASE_MACRO(EQ(void, 0), FALSE);
 	TEST_CASE_MACRO(EQ(xyz, xyz), "You must define ENABLE_EQ_xyz_xyz to use EQ on xyz");
 	TEST_CASE_MACRO(EQ(abc, xyz), "You must define ENABLE_EQ_abc_abc to use EQ on abc");
+	TEST_CASE_MACRO(NE(0, 1), TRUE);
+	TEST_CASE_MACRO(NE(0, 0), FALSE);
 	std::cout << std::endl;
 	
 	std::cout << "IS_THING:" << std::endl;

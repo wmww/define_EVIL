@@ -86,6 +86,9 @@
 					(TO_STRING(You must define ENABLE_EQ_##a##_##a to use EQ on a)) \
 					(NOT(IS_THING(EXPAND_CAT(ENABLE_EQ_, EXPAND_CAT(a, EXPAND_CAT(_, b))))))
 
+// not equal
+#define NE(a, b) NOT(EQ(a, b))
+
 // enable equality check for various common values, you can add more elsewhere
 #define ENABLE_EQ_TRUE_TRUE
 #define ENABLE_EQ_FALSE_FALSE
