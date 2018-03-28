@@ -78,9 +78,9 @@
 #define _AG_REMOVE_COMMAS_23(a, ...) a _AG_REMOVE_COMMAS_24(__VA_ARGS__)
 #define _AG_REMOVE_COMMAS_24(a, ...) a
 
-// COUNT_THINGS
-#define _AG_COUNT_THINGS_NUMBERS 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
-#define _AG_COUNT_THINGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, n, ...) n
+// COUNT
+#define _AG_COUNT_NUMBERS 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+#define _AG_COUNT(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, n, ...) n
 
 // REPEAT
 #define _AG_REPEAT_0(macro, joiner, order)

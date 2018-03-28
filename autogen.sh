@@ -23,15 +23,15 @@ do
 done
 printf "#define _AG_REMOVE_COMMAS_$max_commas(a, ...) a\n\n"
 
-printf "// COUNT_THINGS\n"
+printf "// COUNT\n"
 max_count=24
-printf "#define _AG_COUNT_THINGS_NUMBERS "
+printf "#define _AG_COUNT_NUMBERS "
 for (( i=$max_count; i>=2; i-- ))
 do
 	printf "$i, "
 done
 printf "1\n"
-printf "#define _AG_COUNT_THINGS("
+printf "#define _AG_COUNT("
 for (( i=0; i<$max_count; i++ ))
 do
 	printf "_$i, "
