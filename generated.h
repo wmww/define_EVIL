@@ -51,6 +51,56 @@
 #define DEC_23 22
 #define DEC_24 23
 
+// enables the usage of EQ on numbers
+#define ENABLE_EQ_0_0
+#define ENABLE_EQ_1_1
+#define ENABLE_EQ_2_2
+#define ENABLE_EQ_3_3
+#define ENABLE_EQ_4_4
+#define ENABLE_EQ_5_5
+#define ENABLE_EQ_6_6
+#define ENABLE_EQ_7_7
+#define ENABLE_EQ_8_8
+#define ENABLE_EQ_9_9
+#define ENABLE_EQ_10_10
+#define ENABLE_EQ_11_11
+#define ENABLE_EQ_12_12
+#define ENABLE_EQ_13_13
+#define ENABLE_EQ_14_14
+#define ENABLE_EQ_15_15
+#define ENABLE_EQ_16_16
+#define ENABLE_EQ_17_17
+#define ENABLE_EQ_18_18
+#define ENABLE_EQ_19_19
+#define ENABLE_EQ_20_20
+#define ENABLE_EQ_21_21
+#define ENABLE_EQ_22_22
+#define ENABLE_EQ_23_23
+#define ENABLE_EQ_24_24
+#define ENABLE_EQ_25_25
+#define ENABLE_EQ_26_26
+#define ENABLE_EQ_27_27
+#define ENABLE_EQ_28_28
+#define ENABLE_EQ_29_29
+#define ENABLE_EQ_30_30
+#define ENABLE_EQ_31_31
+#define ENABLE_EQ_32_32
+#define ENABLE_EQ_33_33
+#define ENABLE_EQ_34_34
+#define ENABLE_EQ_35_35
+#define ENABLE_EQ_36_36
+#define ENABLE_EQ_37_37
+#define ENABLE_EQ_38_38
+#define ENABLE_EQ_39_39
+#define ENABLE_EQ_40_40
+#define ENABLE_EQ_41_41
+#define ENABLE_EQ_42_42
+#define ENABLE_EQ_43_43
+#define ENABLE_EQ_44_44
+#define ENABLE_EQ_45_45
+#define ENABLE_EQ_46_46
+#define ENABLE_EQ_47_47
+
 // REMOVE_COMMAS
 #define _GEN_REMOVE_COMMAS_0(a, ...) a _GEN_REMOVE_COMMAS_1(__VA_ARGS__)
 #define _GEN_REMOVE_COMMAS_1(a, ...) a _GEN_REMOVE_COMMAS_2(__VA_ARGS__)

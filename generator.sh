@@ -15,6 +15,14 @@ do
 done
 printf "\n"
 
+printf "// enables the usage of EQ on numbers\n"
+max_enable_eq=48
+for (( i=0; i<$max_enable_eq; i++ ))
+do
+	printf "#define ENABLE_EQ_${i}_${i}\n"
+done
+printf "\n"
+
 printf "// REMOVE_COMMAS\n"
 max_commas=24
 for (( i=0; i<$max_commas; i++ ))

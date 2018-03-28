@@ -81,11 +81,20 @@ int main()
 	TEST_CASE_MACRO(EQ(1, 0), FALSE);
 	TEST_CASE_MACRO(EQ(1, 1), TRUE);
 	TEST_CASE_MACRO(EQ(0, 0), TRUE);
+	TEST_CASE_MACRO(EQ(2, 2), TRUE);
+	TEST_CASE_MACRO(EQ(6, 6), TRUE);
+	TEST_CASE_MACRO(EQ(18, 18), TRUE);
+	TEST_CASE_MACRO(EQ(18, 17), FALSE);
+	TEST_CASE_MACRO(EQ(, 0), FALSE);
+	TEST_CASE_MACRO(EQ(0, ), FALSE);
+	TEST_CASE_MACRO(EQ(, ), TRUE);
 	TEST_CASE_MACRO(EQ(TRUE, FALSE), FALSE);
 	TEST_CASE_MACRO(EQ(FALSE, FALSE), TRUE);
 	TEST_CASE_MACRO(EQ(TRUE, TRUE), TRUE);
 	TEST_CASE_MACRO(EQ(void, void), TRUE);
 	TEST_CASE_MACRO(EQ(void, 0), FALSE);
+	TEST_CASE_MACRO(EQ(xyz, xyz), "You must define ENABLE_EQ_xyz_xyz to use EQ on xyz");
+	TEST_CASE_MACRO(EQ(abc, xyz), "You must define ENABLE_EQ_abc_abc to use EQ on abc");
 	std::cout << std::endl;
 	
 	std::cout << "IS_THING:" << std::endl;
