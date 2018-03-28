@@ -31,7 +31,7 @@ int main()
 	TEST_CASE_MACRO(REMOVE_COMMAS("a",b, c,5   ,int*,,,8,), "a" b c 5 int* 8);
 	std::cout << std::endl;
 	
-	std::cout << "BOOL:" << std::endl;
+	std::cout << "Bools:" << std::endl;
 	TEST_CASE_MACRO(NOT(TRUE), FALSE);
 	TEST_CASE_MACRO(NOT(FALSE), TRUE);
 	TEST_CASE_MACRO(OR(TRUE, TRUE), TRUE);
@@ -49,6 +49,17 @@ int main()
 	TEST_CASE_MACRO(NOT(AND(NOT(FALSE), FALSE)), TRUE);
 	TEST_CASE_MACRO(XOR(TRUE, TRUE), FALSE);
 	TEST_CASE_MACRO(XOR(NOT(AND(NOT(FALSE), FALSE)), TRUE), FALSE);
+	std::cout << std::endl;
+	
+	std::cout << "Conditionals:" << std::endl;
+	TEST_CASE_MACRO(IF(TRUE, ), );
+	TEST_CASE_MACRO(IF(FALSE, ), );
+	TEST_CASE_MACRO(IF(TRUE, abc()), abc());
+	TEST_CASE_MACRO(IF(FALSE, abc()), );
+	TEST_CASE_MACRO(IF(TRUE, x, y, z), x, y, z);
+	TEST_CASE_MACRO(IF(FALSE, x, y, z), );
+	TEST_CASE_MACRO(IF(NOT(TRUE), a), );
+	TEST_CASE_MACRO(IF(XOR(AND(NOT(FALSE), FALSE), TRUE), a), a);
 	std::cout << std::endl;
 	
 	std::cout << "IS_THING:" << std::endl;

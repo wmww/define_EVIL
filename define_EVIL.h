@@ -9,7 +9,7 @@
 
 // convert input to string literal, can be used with EXPAND_CALL
 // depends on: none
-#define TO_STRING(a) #a
+#define TO_STRING(...) #__VA_ARGS__
 
 // used internally by other macros
 #define ORDER_FWD_2(a, b) a b
@@ -58,6 +58,12 @@
 #define _BOOL_XOR_TRUE_FALSE TRUE
 #define _BOOL_XOR_FALSE_TRUE TRUE
 #define _BOOL_XOR_TRUE_TRUE FALSE
+
+// Conditionals
+
+#define IF(cond, ...) EXPAND_CAT(_IF_A_, cond)(__VA_ARGS__)
+#define _IF_A_TRUE(...) __VA_ARGS__
+#define _IF_A_FALSE(...)
 
 // Get Info
 
@@ -137,7 +143,7 @@
 
 // like TEST_CASE, but for when you are testing a macro expression
 // depends on:  EXPAND_CALL, TO_STRING
-#define TEST_CASE_MACRO(macro_expr, expected) _TEST_CASE_A(#macro_expr, EXPAND_CALL(TO_STRING, macro_expr), #expected)
+#define TEST_CASE_MACRO(macro_expr, ...) _TEST_CASE_A(#macro_expr, EXPAND_CALL(TO_STRING, macro_expr), #__VA_ARGS__)
 
 #define _TEST_CASE_A(expr_str, result, expected) { \
 	const bool success = (result == expected); \
