@@ -1,4 +1,8 @@
 // auto-generated from autogen.sh, DO NOT EDIT!
+// intended to be used by #define_EVIL (https://github.com/wmww/define_EVIL)
+// dealing with close to or more then 32 things may not work
+
+#define GEN_MAX_NUM 32
 
 // INC_ and DEC_
 // usage: cat INC_ or DEC_ to any small number to get n+1 or n-1
@@ -26,6 +30,15 @@
 #define INC_21 22
 #define INC_22 23
 #define INC_23 24
+#define INC_24 25
+#define INC_25 26
+#define INC_26 27
+#define INC_27 28
+#define INC_28 29
+#define INC_29 30
+#define INC_30 31
+#define INC_31 32
+
 #define DEC_1 0
 #define DEC_2 1
 #define DEC_3 2
@@ -50,6 +63,14 @@
 #define DEC_22 21
 #define DEC_23 22
 #define DEC_24 23
+#define DEC_25 24
+#define DEC_26 25
+#define DEC_27 26
+#define DEC_28 27
+#define DEC_29 28
+#define DEC_30 29
+#define DEC_31 30
+#define DEC_32 31
 
 // enables the usage of EQ on numbers
 #define ENABLE_EQ_0_0
@@ -84,22 +105,6 @@
 #define ENABLE_EQ_29_29
 #define ENABLE_EQ_30_30
 #define ENABLE_EQ_31_31
-#define ENABLE_EQ_32_32
-#define ENABLE_EQ_33_33
-#define ENABLE_EQ_34_34
-#define ENABLE_EQ_35_35
-#define ENABLE_EQ_36_36
-#define ENABLE_EQ_37_37
-#define ENABLE_EQ_38_38
-#define ENABLE_EQ_39_39
-#define ENABLE_EQ_40_40
-#define ENABLE_EQ_41_41
-#define ENABLE_EQ_42_42
-#define ENABLE_EQ_43_43
-#define ENABLE_EQ_44_44
-#define ENABLE_EQ_45_45
-#define ENABLE_EQ_46_46
-#define ENABLE_EQ_47_47
 
 // REMOVE_COMMAS
 #define _GEN_REMOVE_COMMAS_0(a, ...) a _GEN_REMOVE_COMMAS_1(__VA_ARGS__)
@@ -126,11 +131,19 @@
 #define _GEN_REMOVE_COMMAS_21(a, ...) a _GEN_REMOVE_COMMAS_22(__VA_ARGS__)
 #define _GEN_REMOVE_COMMAS_22(a, ...) a _GEN_REMOVE_COMMAS_23(__VA_ARGS__)
 #define _GEN_REMOVE_COMMAS_23(a, ...) a _GEN_REMOVE_COMMAS_24(__VA_ARGS__)
-#define _GEN_REMOVE_COMMAS_24(a, ...) a
+#define _GEN_REMOVE_COMMAS_24(a, ...) a _GEN_REMOVE_COMMAS_25(__VA_ARGS__)
+#define _GEN_REMOVE_COMMAS_25(a, ...) a _GEN_REMOVE_COMMAS_26(__VA_ARGS__)
+#define _GEN_REMOVE_COMMAS_26(a, ...) a _GEN_REMOVE_COMMAS_27(__VA_ARGS__)
+#define _GEN_REMOVE_COMMAS_27(a, ...) a _GEN_REMOVE_COMMAS_28(__VA_ARGS__)
+#define _GEN_REMOVE_COMMAS_28(a, ...) a _GEN_REMOVE_COMMAS_29(__VA_ARGS__)
+#define _GEN_REMOVE_COMMAS_29(a, ...) a _GEN_REMOVE_COMMAS_30(__VA_ARGS__)
+#define _GEN_REMOVE_COMMAS_30(a, ...) a _GEN_REMOVE_COMMAS_31(__VA_ARGS__)
+#define _GEN_REMOVE_COMMAS_31(a, ...) a _GEN_REMOVE_COMMAS_32(__VA_ARGS__)
+#define _GEN_REMOVE_COMMAS_32(a, ...) a
 
 // COUNT
-#define _GEN_COUNT_NUMBERS 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
-#define _GEN_COUNT(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, n, ...) n
+#define _GEN_COUNT_NUMBERS 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+#define _GEN_COUNT(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, n, ...) n
 
 // REPEAT
 #define _GEN_REPEAT_0(macro, order)
@@ -158,6 +171,14 @@
 #define _GEN_REPEAT_22(macro, order) order(_GEN_REPEAT_21(macro, order), macro(21))
 #define _GEN_REPEAT_23(macro, order) order(_GEN_REPEAT_22(macro, order), macro(22))
 #define _GEN_REPEAT_24(macro, order) order(_GEN_REPEAT_23(macro, order), macro(23))
+#define _GEN_REPEAT_25(macro, order) order(_GEN_REPEAT_24(macro, order), macro(24))
+#define _GEN_REPEAT_26(macro, order) order(_GEN_REPEAT_25(macro, order), macro(25))
+#define _GEN_REPEAT_27(macro, order) order(_GEN_REPEAT_26(macro, order), macro(26))
+#define _GEN_REPEAT_28(macro, order) order(_GEN_REPEAT_27(macro, order), macro(27))
+#define _GEN_REPEAT_29(macro, order) order(_GEN_REPEAT_28(macro, order), macro(28))
+#define _GEN_REPEAT_30(macro, order) order(_GEN_REPEAT_29(macro, order), macro(29))
+#define _GEN_REPEAT_31(macro, order) order(_GEN_REPEAT_30(macro, order), macro(30))
+#define _GEN_REPEAT_32(macro, order) order(_GEN_REPEAT_31(macro, order), macro(31))
 
 // MAP
 #define _GEN_MAP_0(macro, order, index, dir, empty)
@@ -185,4 +206,12 @@
 #define _GEN_MAP_22(macro, order, index, dir, item, ...) order(macro(item, index), _GEN_MAP_21(macro, order, EXPAND_CAT(dir, index), dir, __VA_ARGS__))
 #define _GEN_MAP_23(macro, order, index, dir, item, ...) order(macro(item, index), _GEN_MAP_22(macro, order, EXPAND_CAT(dir, index), dir, __VA_ARGS__))
 #define _GEN_MAP_24(macro, order, index, dir, item, ...) order(macro(item, index), _GEN_MAP_23(macro, order, EXPAND_CAT(dir, index), dir, __VA_ARGS__))
+#define _GEN_MAP_25(macro, order, index, dir, item, ...) order(macro(item, index), _GEN_MAP_24(macro, order, EXPAND_CAT(dir, index), dir, __VA_ARGS__))
+#define _GEN_MAP_26(macro, order, index, dir, item, ...) order(macro(item, index), _GEN_MAP_25(macro, order, EXPAND_CAT(dir, index), dir, __VA_ARGS__))
+#define _GEN_MAP_27(macro, order, index, dir, item, ...) order(macro(item, index), _GEN_MAP_26(macro, order, EXPAND_CAT(dir, index), dir, __VA_ARGS__))
+#define _GEN_MAP_28(macro, order, index, dir, item, ...) order(macro(item, index), _GEN_MAP_27(macro, order, EXPAND_CAT(dir, index), dir, __VA_ARGS__))
+#define _GEN_MAP_29(macro, order, index, dir, item, ...) order(macro(item, index), _GEN_MAP_28(macro, order, EXPAND_CAT(dir, index), dir, __VA_ARGS__))
+#define _GEN_MAP_30(macro, order, index, dir, item, ...) order(macro(item, index), _GEN_MAP_29(macro, order, EXPAND_CAT(dir, index), dir, __VA_ARGS__))
+#define _GEN_MAP_31(macro, order, index, dir, item, ...) order(macro(item, index), _GEN_MAP_30(macro, order, EXPAND_CAT(dir, index), dir, __VA_ARGS__))
+#define _GEN_MAP_32(macro, order, index, dir, item, ...) order(macro(item, index), _GEN_MAP_31(macro, order, EXPAND_CAT(dir, index), dir, __VA_ARGS__))
 
