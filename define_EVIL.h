@@ -2,7 +2,7 @@
 #define EVIL
 
 // macros auto-generated from autogen.sh
-// should all be prefixed with _AG_
+// should all be prefixed with GEN_
 #include "generated.h"
 
 /// General Utils
@@ -23,9 +23,8 @@
 // expands the arguments and then call macro with the expanded arguments
 // depends on: none
 #define EXPAND_CALL(macro, ...) macro(__VA_ARGS__)
-#define EXPAND_CALL_1(macro, a) macro(a)
 
-// even I'm not completely sure why this is needed, but it is.
+// even I'm not completely sure why this is needed, but it is
 #define EXPAND(...) __VA_ARGS__
 
 // toggleable expansion
@@ -72,6 +71,7 @@
 // IF(TRUE)(abc)	-> abc
 // IF(FALSE)(abc)	-> [empty]
 #define IF(cond) EXPAND_CAT(EXPAND_, cond)
+#define IF_NOT(cond) IF(NOT(cond))
 
 // IF_ELSE(TRUE)(abc)(xyz)	-> abc
 // IF_ELSE(FALSE)(abc)(xyz)	-> xyz
@@ -136,21 +136,6 @@
 						(EXPAND_CALL(_GEN_COUNT, __VA_ARGS__, _GEN_COUNT_NUMBERS)) \
 						(0)
 
-/*
-// GET_ITEM(abc, FIRST) -> abc
-// GET_ITEM(abc, SECOND) -> [empty]
-// GET_ITEM((abc, xyz), FIRST) -> abc
-// GET_ITEM((abc, xyz), SECOND) -> xyz
-// specalized to be used with REPEAT and MAP, may be more generalized later
-#define GET_ITEM(func, item) EXPAND_CAT(_GET_ITEM_, HAS_PEREN(func)) (func, item)
-#define _GET_ITEM_TRUE(func, item) _GET_ITEM_TRUE_##item func
-#define _GET_ITEM_TRUE_FIRST(macro, joiner) macro
-#define _GET_ITEM_TRUE_SECOND(macro, joiner) joiner
-#define _GET_ITEM_FALSE(func, item) _GET_ITEM_FALSE_##item (func)
-#define _GET_ITEM_FALSE_FIRST(func) func
-#define _GET_ITEM_FALSE_SECOND(func)
-*/
-
 // Many Items
 
 #define REPEAT(func, count) _GEN_REPEAT_##count(func, ORDER_FORWARD)
@@ -159,7 +144,7 @@
 // applies the given macro to all additional arguments
 // macro should accept item and index
 // MAP_DOWN: indexes count down to 0 instead of up from 0
-// MAP_REVERSE: items are in reverse order
+// MAP_REVERSE: reverse order of items
 // MAP_REVERSE_DOWN: both
 // depends on: EXPAND_CAT, COUNT, INC_.. (auto generated), DEC_.. (auto generated)
 #define MAP(func, ...) EXPAND_CAT(_GEN_MAP_, COUNT(__VA_ARGS__))(func, ORDER_FORWARD, 0, INC_, __VA_ARGS__)
