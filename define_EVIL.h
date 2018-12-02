@@ -167,23 +167,4 @@
 #define MAP_REVERSE(func, ...) EXPAND_CAT(_GEN_MAP_, COUNT(__VA_ARGS__))(func, ORDER_BACKWARD, EXPAND_CAT(DEC_, COUNT(__VA_ARGS__)), DEC_, __VA_ARGS__)
 #define MAP_REVERSE_DOWN(func, ...) EXPAND_CAT(_GEN_MAP_, COUNT(__VA_ARGS__))(func, ORDER_BACKWARD, 0, INC_, __VA_ARGS__)
 
-// Tests
-
-// tests if the input expression matches the expected value and prints result
-// depends on:  none
-#define TEST_CASE(expr, expected) _TEST_CASE_A(#expr, expr, expected)
-
-// like TEST_CASE, but for when you are testing a macro expression
-// depends on:  EXPAND_CALL, TO_STRING
-#define TEST_CASE_MACRO(macro_expr, ...) _TEST_CASE_A(#macro_expr, EXPAND_CALL(TO_STRING, macro_expr), #__VA_ARGS__)
-
-#define _TEST_CASE_A(expr_str, result, expected) { \
-	const bool success = (result == expected); \
-	std::cout << (success ? " .  " : " X  ") << expr_str << ": " << result; \
-	if (!success) { \
-		std::cout << " (" << expected << " expected)"; \
-	} \
-	std::cout << std::endl; \
-}
-
 #endif // EVIL

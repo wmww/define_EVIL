@@ -1,5 +1,41 @@
 #include "define_EVIL.h"
+
 #include <iostream>
+#include <vector>
+#include <string>
+
+#define TEST_CASE_MACRO(macro_expr, ...) test_case(#macro_expr, EXPAND_CALL(TO_STRING, macro_expr), #__VA_ARGS__)
+
+std::vector<std::string> failed_tests;
+
+void test_case(std::string expr_str, std::string result, std::string expected) {
+	const bool success = (result == expected);
+	if (success)
+		std::cout << " .  ";
+	else
+		std::cout << " X  ";
+	std::cout << expr_str << ": " << result;
+	if (!success) {
+		std::cout << " (" << expected << " expected)";
+		failed_tests.push_back({expr_str});
+	}
+	std::cout << std::endl;
+}
+
+// Returns true if all tests passed
+bool show_final_result() {
+	if (failed_tests.size() == 0) {
+		std::cout << "All tests passed!" << std::endl;
+		return true;
+	} else {
+		std::cout << failed_tests.size() << " test" << (failed_tests.size() > 1 ? "s" : "") << " failed: ";
+		for (int i = 0; i < failed_tests.size(); i++) {
+			std::cout << (i > 0 ? ", " : "") << failed_tests[i];
+		}
+		std::cout << std::endl;
+		return false;
+	}
+}
 
 #define EMPTY_MACRO
 #define PUT_IN_BRAC(a, i) [i: a]
@@ -194,6 +230,6 @@ int main()
 	TEST_CASE_MACRO(COUNT(EMPTY_MACRO), 0);
 	TEST_CASE_MACRO(COUNT("abc", 2, fsdafds, ()), 4);
 	std::cout << std::endl;
-	
-	return 0;
+
+	return show_final_result() ? 0 : 1;
 }
