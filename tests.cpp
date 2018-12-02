@@ -8,15 +8,22 @@
 
 std::vector<std::string> failed_tests;
 
+namespace color {
+const char *normal = "\x1b[0m";
+const char *green = "\x1b[1;32m";
+const char *red = "\x1b[1;31m";
+}
+
 void test_case(std::string expr_str, std::string result, std::string expected) {
+	using namespace color;
 	const bool success = (result == expected);
 	if (success)
-		std::cout << " .  ";
+		std::cout << green << " .  " << normal;
 	else
-		std::cout << " X  ";
-	std::cout << expr_str << ": " << result;
+		std::cout << red << " X  ";
+	std::cout << expr_str << ": " << normal << result;
 	if (!success) {
-		std::cout << " (" << expected << " expected)";
+		std::cout << red << " | " << normal << expected << red << " expected" << normal;
 		failed_tests.push_back({expr_str});
 	}
 	std::cout << std::endl;
@@ -24,13 +31,14 @@ void test_case(std::string expr_str, std::string result, std::string expected) {
 
 // Returns true if all tests passed
 bool show_final_result() {
+	using namespace color;
 	if (failed_tests.size() == 0) {
-		std::cout << "All tests passed!" << std::endl;
+		std::cout << green << "All tests passed!" << normal << std::endl;
 		return true;
 	} else {
-		std::cout << failed_tests.size() << " test" << (failed_tests.size() > 1 ? "s" : "") << " failed: ";
+		std::cout << red << failed_tests.size() << " test" << (failed_tests.size() > 1 ? "s" : "") << " failed: " << normal;
 		for (int i = 0; i < failed_tests.size(); i++) {
-			std::cout << (i > 0 ? ", " : "") << failed_tests[i];
+			std::cout << red << (i > 0 ? ", " : "") << normal << failed_tests[i];
 		}
 		std::cout << std::endl;
 		return false;
