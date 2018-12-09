@@ -170,6 +170,10 @@ int main()
 	TEST_CASE_MACRO(HAS_PEREN(((a))), TRUE);
 	TEST_CASE_MACRO(HAS_PEREN((1, "a", ())), TRUE);
 	TEST_CASE_MACRO(HAS_PEREN((), 1, "a"), FALSE);
+	TEST_CASE_MACRO(HAS_PEREN((a) b), FALSE);
+	TEST_CASE_MACRO(HAS_PEREN(a (b)), FALSE);
+	TEST_CASE_MACRO(HAS_PEREN((a) (b)), FALSE);
+	TEST_CASE_MACRO(HAS_PEREN((a) c (b)), FALSE);
 	std::cout << std::endl;
 	
 	/*

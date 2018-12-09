@@ -119,6 +119,7 @@
 // HAS_PEREN((), a, 6, "a") -> FALSE
 // HAS_PEREN(()) -> TRUE
 // HAS_PEREN((a, 6, "a")) -> TRUE
+// HAS_PEREN((a) (b)) -> FALSE
 // depends on: EXPAND_CAT, EXPAND
 #define HAS_PEREN(...) _HAS_PEREN_C(EXPAND(_HAS_PEREN_A __VA_ARGS__))
 #define _HAS_PEREN_A(...) _HAS_PEREN_B
