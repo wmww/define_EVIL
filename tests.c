@@ -1,6 +1,7 @@
 #include "define_EVIL.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #define TEST_CASE_MACRO(macro_expr, ...) test_case(__FILE__, __LINE__, #macro_expr, EVIL_EXPAND_CALL(EVIL_TO_STRING, macro_expr), #__VA_ARGS__)
 #define COLOR_NORMAL "\x1b[0m"
