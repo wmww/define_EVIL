@@ -2,7 +2,7 @@
 // intended to be used by #define_EVIL (https://github.com/wmww/define_EVIL)
 // dealing with close to or more then 32 things may not work
 
-#if not(defined(EVIL)) || defined(_EVIL_GEN_H)
+#if !defined(EVIL) || defined(_EVIL_GEN_H)
 #error this file should only be included by define_EVIL.h
 #endif
 #define _EVIL_GEN_H

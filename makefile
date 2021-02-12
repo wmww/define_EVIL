@@ -1,8 +1,8 @@
-tests: tests.cpp define_EVIL.h generated
-	g++ -std=c++11 -o tests_bin tests.cpp
+tests: tests.c define_EVIL.h generated
+	gcc -std=c11 -o tests_bin tests.c
 
-dump: tests.cpp define_EVIL.h generated
-	g++ -std=c++11 -E tests.cpp
+dump: tests.c define_EVIL.h generated
+	gcc -std=c11 -E tests.c
 
 generated: generator.sh
 	./generator.sh > generated_EVIL.h

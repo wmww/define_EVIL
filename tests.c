@@ -1,47 +1,48 @@
 #include "define_EVIL.h"
 
-#include <iostream>
-#include <vector>
-#include <string>
+#include <stdio.h>
 
 #define TEST_CASE_MACRO(macro_expr, ...) test_case(#macro_expr, EVIL_EXPAND_CALL(EVIL_TO_STRING, macro_expr), #__VA_ARGS__)
+#define COLOR_NORMAL "\x1b[0m"
+#define COLOR_GREEN "\x1b[1;32m"
+#define COLOR_RED "\x1b[1;31m"
 
-std::vector<std::string> failed_tests;
+int failed_tests_count = 0;
+const char* failed_tests[1000];
 
-namespace color {
-const char *normal = "\x1b[0m";
-const char *green = "\x1b[1;32m";
-const char *red = "\x1b[1;31m";
-}
-
-void test_case(std::string expr_str, std::string result, std::string expected) {
-    using namespace color;
-    const bool success = (result == expected);
+void test_case(const char* expr_str, const char* result, const char* expected) {
+    const int success = (result == expected);
     if (success)
-        std::cout << green << " .  " << normal;
+        printf(COLOR_GREEN " .  " COLOR_NORMAL);
     else
-        std::cout << red << " X  ";
-    std::cout << expr_str << ": " << normal << result;
+        printf(COLOR_RED " X  ");
+    printf("%s: " COLOR_NORMAL "%s", expr_str, result);
     if (!success) {
-        std::cout << red << " | " << normal << expected << red << " expected" << normal;
-        failed_tests.push_back({expr_str});
+        printf(COLOR_RED " | " COLOR_NORMAL "%s" COLOR_RED " expected" COLOR_NORMAL, expected);
+        failed_tests[failed_tests_count] = expr_str;
+        failed_tests_count++;
     }
-    std::cout << std::endl;
+    printf("\n");
 }
 
 // Returns true if all tests passed
-bool show_final_result() {
-    using namespace color;
-    if (failed_tests.size() == 0) {
-        std::cout << green << "All tests passed!" << normal << std::endl;
-        return true;
+int show_final_result() {
+    if (failed_tests_count == 0) {
+        printf(COLOR_GREEN "All tests passed!" COLOR_NORMAL "\n");
+        return 1;
     } else {
-        std::cout << red << failed_tests.size() << " test" << (failed_tests.size() > 1 ? "s" : "") << " failed: " << normal;
-        for (int i = 0; i < failed_tests.size(); i++) {
-            std::cout << red << (i > 0 ? ", " : "") << normal << failed_tests[i];
+        printf(
+            COLOR_RED "%d test%s failed: " COLOR_NORMAL,
+            failed_tests_count,
+            failed_tests_count > 1 ? "s" : "");
+        for (int i = 0; i < failed_tests_count; i++) {
+            printf(
+                COLOR_RED "%s" COLOR_NORMAL "%s",
+                (i > 0 ? ", " : ""),
+                failed_tests[i]);
         }
-        std::cout << std::endl;
-        return false;
+        printf("\n");
+        return 0;
     }
 }
 
@@ -56,9 +57,7 @@ bool show_final_result() {
 
 int main()
 {
-    std::cout << std::endl;
-
-    std::cout << "general utils:" << std::endl;
+    printf("\ngeneral utils:\n");
     #define XYZW xyzw
     #define xyzw_a foo
     TEST_CASE_MACRO(EVIL_EXPAND_CALL(EVIL_TO_STRING, XYZW), "xyzw");
@@ -71,17 +70,17 @@ int main()
     TEST_CASE_MACRO(EVIL_EXPAND_CAT(EVIL_DEC_, 24), 23);
     TEST_CASE_MACRO(EVIL_EXPAND_TRUE(abc, xyz), abc, xyz);
     TEST_CASE_MACRO(EVIL_EXPAND_FALSE(abc, xyz), );
-    std::cout << std::endl;
+    printf("\n");
 
-    std::cout << "EVIL_REMOVE_COMMAS:" << std::endl;
+    printf("EVIL_REMOVE_COMMAS:\n");
     TEST_CASE_MACRO(EVIL_REMOVE_COMMAS(), );
     TEST_CASE_MACRO(EVIL_REMOVE_COMMAS(abc), abc);
     TEST_CASE_MACRO(EVIL_REMOVE_COMMAS(,), );
     TEST_CASE_MACRO(EVIL_REMOVE_COMMAS(a,b), a b);
     TEST_CASE_MACRO(EVIL_REMOVE_COMMAS("a",b, c,5   ,int*,,,8,), "a" b c 5 int* 8);
-    std::cout << std::endl;
+    printf("\n");
 
-    std::cout << "Bools:" << std::endl;
+    printf("Bools:\n");
     TEST_CASE_MACRO(EVIL_NOT(TRUE), FALSE);
     TEST_CASE_MACRO(EVIL_NOT(FALSE), TRUE);
     TEST_CASE_MACRO(EVIL_OR(TRUE, TRUE), TRUE);
@@ -99,9 +98,9 @@ int main()
     TEST_CASE_MACRO(EVIL_NOT(EVIL_AND(EVIL_NOT(FALSE), FALSE)), TRUE);
     TEST_CASE_MACRO(EVIL_XOR(TRUE, TRUE), FALSE);
     TEST_CASE_MACRO(EVIL_XOR(EVIL_NOT(EVIL_AND(EVIL_NOT(FALSE), FALSE)), TRUE), FALSE);
-    std::cout << std::endl;
+    printf("\n");
 
-    std::cout << "Conditionals:" << std::endl;
+    printf("Conditionals:\n");
     TEST_CASE_MACRO(EVIL_IF(TRUE)(), );
     TEST_CASE_MACRO(EVIL_IF(FALSE)(), );
     TEST_CASE_MACRO(EVIL_IF(TRUE)(abc()), abc());
@@ -119,9 +118,9 @@ int main()
     TEST_CASE_MACRO(EVIL_IF_ELSE(FALSE)(x, y, z)(a, b, c), a, b, c);
     TEST_CASE_MACRO(EVIL_IF_ELSE(EVIL_NOT(TRUE))(a)(b), b);
     TEST_CASE_MACRO(EVIL_IF_ELSE(EVIL_XOR(EVIL_AND(EVIL_NOT(FALSE), FALSE), TRUE))(a)(b), a);
-    std::cout << std::endl;
+    printf("\n");
 
-    std::cout << "Equality:" << std::endl;
+    printf("Equality:\n");
     TEST_CASE_MACRO(EVIL_EQ(0, 1), FALSE);
     TEST_CASE_MACRO(EVIL_EQ(1, 0), FALSE);
     TEST_CASE_MACRO(EVIL_EQ(1, 1), TRUE);
@@ -143,9 +142,9 @@ int main()
     TEST_CASE_MACRO(EVIL_EQ(abc, xyz), "You must define EVIL_ENABLE_EQ_abc_abc to use EVIL_EQ on abc");
     TEST_CASE_MACRO(EVIL_NE(0, 1), TRUE);
     TEST_CASE_MACRO(EVIL_NE(0, 0), FALSE);
-    std::cout << std::endl;
+    printf("\n");
 
-    std::cout << "EVIL_IS_THING:" << std::endl;
+    printf("EVIL_IS_THING:\n");
     TEST_CASE_MACRO(EVIL_IS_THING(a_thing), TRUE);
     TEST_CASE_MACRO(EVIL_IS_THING("abc"), TRUE);
     TEST_CASE_MACRO(EVIL_IS_THING("abc", 5, foo), TRUE);
@@ -159,9 +158,9 @@ int main()
     TEST_CASE_MACRO(EVIL_IS_THING(), FALSE);
     TEST_CASE_MACRO(EVIL_IS_THING(EMPTY_MACRO), FALSE);
     TEST_CASE_MACRO(EVIL_IS_THING(,,,,,,,,,,,,,), FALSE);
-    std::cout << std::endl;
+    printf("\n");
 
-    std::cout << "HAS_PEREN:" << std::endl;
+    printf("HAS_PEREN:\n");
     TEST_CASE_MACRO(EVIL_HAS_PEREN(), FALSE);
     TEST_CASE_MACRO(EVIL_HAS_PEREN(a), FALSE);
     TEST_CASE_MACRO(EVIL_HAS_PEREN("a"), FALSE);
@@ -175,9 +174,9 @@ int main()
     TEST_CASE_MACRO(EVIL_HAS_PEREN(a (b)), FALSE);
     TEST_CASE_MACRO(EVIL_HAS_PEREN((a) (b)), FALSE);
     TEST_CASE_MACRO(EVIL_HAS_PEREN((a) c (b)), FALSE);
-    std::cout << std::endl;
+    printf("\n");
 
-    std::cout << "REPEAT:" << std::endl;
+    printf("REPEAT:\n");
     TEST_CASE_MACRO(EVIL_REPEAT(ADD_T, 0), );
     TEST_CASE_MACRO(EVIL_REPEAT(ADD_T, 1), T_0);
     TEST_CASE_MACRO(EVIL_REPEAT(ADD_T, 4), T_0 T_1 T_2 T_3);
@@ -190,9 +189,9 @@ int main()
     TEST_CASE_MACRO(EVIL_REPEAT_DOWN(ADD_T_DIVIDER_DOWN, 0), );
     TEST_CASE_MACRO(EVIL_REPEAT_DOWN(ADD_T_DIVIDER_DOWN, 1), T_0);
     TEST_CASE_MACRO(EVIL_REPEAT_DOWN(ADD_T_DIVIDER_DOWN, 4), T_3 | T_2 | T_1 | T_0);
-    std::cout << std::endl;
+    printf("\n");
 
-    std::cout << "MAP:" << std::endl;
+    printf("MAP:\n");
 
     TEST_CASE_MACRO(EVIL_MAP(PUT_IN_BRAC, a, b, c, d), [0: a] [1: b] [2: c] [3: d]);
     TEST_CASE_MACRO(EVIL_MAP(PUT_IN_BRAC, a), [0: a]);
@@ -225,16 +224,16 @@ int main()
     TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(PUT_IN_BRAC_DIVIDER_DOWN, a, b, c, d), [3: d] | [2: c] | [1: b] | [0: a]);
     TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(PUT_IN_BRAC_DIVIDER_DOWN, a), [0: a]);
     TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(PUT_IN_BRAC_DIVIDER_DOWN), );
-    std::cout << std::endl;
+    printf("\n");
 
-    std::cout << "COUNT:" << std::endl;
+    printf("COUNT:\n");
     TEST_CASE_MACRO(EVIL_COUNT(), 0);
     TEST_CASE_MACRO(EVIL_COUNT(a), 1);
     TEST_CASE_MACRO(EVIL_COUNT(a, b), 2);
     TEST_CASE_MACRO(EVIL_COUNT(a, b, c), 3);
     TEST_CASE_MACRO(EVIL_COUNT(EMPTY_MACRO), 0);
     TEST_CASE_MACRO(EVIL_COUNT("abc", 2, fsdafds, ()), 4);
-    std::cout << std::endl;
+    printf("\n");
 
     return show_final_result() ? 0 : 1;
 }
