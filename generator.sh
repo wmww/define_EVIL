@@ -2,12 +2,13 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-max_num=32
+max_num=110
 prefix="EVIL_GEN"
 
 printf "// auto-generated from generator.sh, DO NOT EDIT!\n"
 printf "// intended to be used by #define_EVIL (https://github.com/wmww/define_EVIL)\n"
-printf "// dealing with close to or more then $max_num things may not work\n\n"
+printf "// dealing with close to or more then $max_num elements may not work\n"
+printf "// this limit can be increased in generator.sh\n\n"
 
 printf "/* MIT License
  *
