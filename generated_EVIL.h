@@ -1,6 +1,11 @@
-// auto-generated from autogen.sh, DO NOT EDIT!
+// auto-generated from generator.sh, DO NOT EDIT!
 // intended to be used by #define_EVIL (https://github.com/wmww/define_EVIL)
 // dealing with close to or more then 32 things may not work
+
+#if not(defined(EVIL)) || defined(_EVIL_GEN_H)
+#error this file should only be included by define_EVIL.h
+#endif
+#define _EVIL_GEN_H
 
 #define EVIL_GEN_MAX_NUM 32
 

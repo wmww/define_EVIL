@@ -3,7 +3,7 @@
 
 // macros auto-generated from generateor.sh
 // should all be prefixed with _GEN_
-#include "generated.h"
+#include "generated_EVIL.h"
 
 // # General Utils
 

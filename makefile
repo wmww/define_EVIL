@@ -5,4 +5,4 @@ dump: tests.cpp define_EVIL.h generated
 	g++ -std=c++11 -E tests.cpp
 
 generated: generator.sh
-	./generator.sh > generated.h
+	./generator.sh > generated_EVIL.h

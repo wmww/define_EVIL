@@ -5,9 +5,14 @@ IFS=$'\n\t'
 max_num=32
 prefix="EVIL_GEN"
 
-printf "// auto-generated from autogen.sh, DO NOT EDIT!\n"
+printf "// auto-generated from generator.sh, DO NOT EDIT!\n"
 printf "// intended to be used by #define_EVIL (https://github.com/wmww/define_EVIL)\n"
 printf "// dealing with close to or more then $max_num things may not work\n\n"
+
+printf "#if not(defined(EVIL)) || defined(_${prefix}_H)\n"
+printf "#error this file should only be included by define_EVIL.h\n"
+printf "#endif\n"
+printf "#define _${prefix}_H\n\n"
 
 printf "#define EVIL_GEN_MAX_NUM $max_num\n\n"
 
