@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-#define TEST_CASE_MACRO(macro_expr, ...) test_case(#macro_expr, EVIL_EXPAND_CALL(EVIL_TO_STRING, macro_expr), #__VA_ARGS__)
+#define TEST_CASE_MACRO(macro_expr, ...) test_case(__FILE__, __LINE__, #macro_expr, EVIL_EXPAND_CALL(EVIL_TO_STRING, macro_expr), #__VA_ARGS__)
 #define COLOR_NORMAL "\x1b[0m"
 #define COLOR_GREEN "\x1b[1;32m"
 #define COLOR_RED "\x1b[1;31m"
@@ -10,15 +10,28 @@
 int failed_tests_count = 0;
 const char* failed_tests[1000];
 
-void test_case(const char* expr_str, const char* result, const char* expected) {
-    const int success = (result == expected);
+void test_case(
+    const char* file,
+    int line,
+    const char* expr_str,
+    const char* result,
+    const char* expected
+) {
+    const int success = (strcmp(result, expected) == 0);
     if (success)
-        printf(COLOR_GREEN " .  " COLOR_NORMAL);
+        printf(COLOR_GREEN " .  ");
     else
         printf(COLOR_RED " X  ");
-    printf("%s: " COLOR_NORMAL "%s", expr_str, result);
+    printf(COLOR_NORMAL "%s: %s%s" COLOR_NORMAL, expr_str, success ? COLOR_GREEN : COLOR_RED, result);
     if (!success) {
-        printf(COLOR_RED " | " COLOR_NORMAL "%s" COLOR_RED " expected" COLOR_NORMAL, expected);
+        printf("\n");
+        int padding = strlen(expr_str) - 4;
+        for (int i = 0; i < padding; i++)
+            printf(" ");
+        printf("expected: " COLOR_RED "%s" COLOR_NORMAL "\n", expected);
+        for (int i = 0; i < padding; i++)
+            printf(" ");
+        printf("at %s:%d", file, line);
         failed_tests[failed_tests_count] = expr_str;
         failed_tests_count++;
     }
