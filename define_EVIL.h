@@ -106,10 +106,14 @@
 // only works if there is an ENABLE_EQ_*_* defined for the tokens
 // below EVIL_ENABLE_EQ is defined for booleans, void and empty values, generated.h has it defined for small numbers.
 // depends on: idk man, basically everything
-#define EVIL_EQ(a, b) EVIL_IF_ELSE \
-    (EVIL_IS_THING(EVIL_EXPAND_CAT(EVIL_ENABLE_EQ_, EVIL_EXPAND_CAT(a, EVIL_EXPAND_CAT(_, a))))) \
-    (EVIL_TO_STRING(You must define EVIL_ENABLE_EQ_##a##_##a to use EVIL_EQ on a)) \
-    (EVIL_NOT(EVIL_IS_THING(EVIL_EXPAND_CAT(EVIL_ENABLE_EQ_, EVIL_EXPAND_CAT(a, EVIL_EXPAND_CAT(_, b))))))
+#define EVIL_EQ(a_val, b_val) EVIL_IF_ELSE \
+    (EVIL_IS_THING(EVIL_EXPAND_CAT(EVIL_ENABLE_EQ_, EVIL_EXPAND_CAT(a_val, EVIL_EXPAND_CAT(_, a_val))))) \
+    (EVIL_EXPAND_CALL(EVIL_TO_STRING, You must define \
+        EVIL_EXPAND_CAT( \
+            EVIL_ENABLE_EQ_, EVIL_EXPAND_CAT( \
+                a_val, EVIL_EXPAND_CAT(_, a_val))) \
+        to use EVIL_EQ on a_val)) \
+    (EVIL_NOT(EVIL_IS_THING(EVIL_EXPAND_CAT(EVIL_ENABLE_EQ_, EVIL_EXPAND_CAT(a_val, EVIL_EXPAND_CAT(_, b_val))))))
 
 // expands to TRUE if the two tokens are not equal (see EVIL_EQ)
 // depends on: EVIL_EQ, so basically everything
