@@ -192,6 +192,24 @@
     (EVIL_COUNT_AT_LEAST_1(__VA_ARGS__)) \
     (0)
 
+// a closure is a function-like macro followed by zero or more values, all surounded by parentheses.
+// when invoked, the captured arguments are followed by the given ones
+// EVIL_CLOSURE_INVOKE((MACRO))         -> MACRO()
+// EVIL_CLOSURE_INVOKE((MACRO, a, b))   -> MACRO(a, b)
+// EVIL_CLOSURE_INVOKE((MACRO), x, y)   -> MACRO(x, y)
+// EVIL_CLOSURE_INVOKE((MACRO, a), x)   -> MACRO(a, x)
+#define EVIL_CLOSURE_INVOKE(...) EVIL_EXPAND_CALL (\
+    _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(__VA_ARGS__), \
+        EVIL_EXPAND( \
+            _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(__VA_ARGS__) \
+            EVIL_IF_NOT(EVIL_OR( \
+                EVIL_EQ(EVIL_COUNT_AT_LEAST_1(__VA_ARGS__), 1), \
+                EVIL_EQ(EVIL_COUNT_AT_LEAST_1 _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(__VA_ARGS__), 1))) \
+            (,) \
+            _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS(__VA_ARGS__)))
+#define _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(first, ...) first
+#define _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS(macro, ...) __VA_ARGS__
+
 // repeats func count number of times
 // func is expected to be a function-like macro that takes the current index as it's only argument
 // EVIL_REPEAT(FOO, 3)    -> FOO(0) FOO(1) FOO(2)
