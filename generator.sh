@@ -93,15 +93,6 @@ do
 done
 printf "n, ...) n\n\n"
 
-printf "// EVIL_REPEAT\n"
-printf "#define _${prefix}_REPEAT_0(closure, order)\n"
-printf "#define _${prefix}_REPEAT_1(closure, order) EVIL_CLOSURE_INVOKE(closure, 0)\n"
-for (( i=2; i<=$max_num; i++ ))
-do
-    printf "#define _${prefix}_REPEAT_$i(closure, order) order(_${prefix}_REPEAT_$[i - 1](closure, order), EVIL_CLOSURE_INVOKE(closure, $[i - 1]))\n"
-done
-printf "\n"
-
 printf "// EVIL_MAP\n"
 printf "#define _${prefix}_MAP_0(closure, order, index, dir, empty)\n"
 printf "#define _${prefix}_MAP_1(closure, order, index, dir, item) EVIL_CLOSURE_INVOKE(closure, item, index)\n"

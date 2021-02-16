@@ -214,35 +214,45 @@
 // everything blows up if we use the normal EXPAND_CALL here. We're probably somehow calling it recursivly
 #define _EVIL_CLOSURE_INVOKE_EXPAND_CALL(macro, ...) macro(__VA_ARGS__)
 
-// repeats func count number of times
-// func is expected to be a function-like macro that takes the current index as it's only argument
+// repeats closure count number of times
+// closure is given the current index, see EVIL_CLOSURE_INVOKE for details
 // EVIL_REPEAT(FOO, 3)    -> FOO(0) FOO(1) FOO(2)
 // EVIL_REPEAT(FOO, 0)    -> [empty]
-#define EVIL_REPEAT(closure, count) _EVIL_GEN_REPEAT_##count(closure, EVIL_ORDER_FORWARD)
+#define EVIL_REPEAT(closure, count) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, count) \
+    ((_EVIL_REPEAT_FUNC, closure), EVIL_ORDER_FORWARD, 0, EVIL_INC_,)
+// we have to duplicate EVIL_CLOSURE_INVOKE here because no recursion
+#define _EVIL_REPEAT_FUNC(closure, unused_item, index) _EVIL_REPEAT_FUNC_EXPAND_CALL (\
+    _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST closure, \
+        EVIL_EXPAND( \
+            _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS closure \
+            EVIL_IF_NOT(EVIL_EQ(EVIL_COUNT_AT_LEAST_1 closure, 1)) (,) \
+            index))
+#define _EVIL_REPEAT_FUNC_EXPAND_CALL(macro, ...) macro(__VA_ARGS__)
 
 // same as EVIL_REPEAT, but in reverse order
 // EVIL_REPEAT(FOO, 3)    -> FOO(2) FOO(1) FOO(0)
-#define EVIL_REPEAT_DOWN(closure, count) _EVIL_GEN_REPEAT_##count(closure, EVIL_ORDER_BACKWARD)
+#define EVIL_REPEAT_DOWN(closure, count) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, count) \
+    ((_EVIL_REPEAT_FUNC, closure), EVIL_ORDER_FORWARD, EVIL_EXPAND_CAT(EVIL_DEC_, count), EVIL_DEC_,)
 
-// applies the given macro to all additional arguments
-// macro should accept item and index
+// applies the given closure to all additional arguments
+// closure is given the item and the index, see EVIL_CLOSURE_INVOKE for details
 // EVIL_MAP(FOO, a, b, c)   -> FOO(a, 0) FOO(b, 1) FOO(c, 2)
-#define EVIL_MAP(func, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
-    (func, EVIL_ORDER_FORWARD, 0, EVIL_INC_, __VA_ARGS__)
+#define EVIL_MAP(closure, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
+    (closure, EVIL_ORDER_FORWARD, 0, EVIL_INC_, __VA_ARGS__)
 
 // same as EVIL_MAP, but indexes count down instead of up
 // EVIL_MAP_DOWN(FOO, a, b, c)   -> FOO(a, 2) FOO(b, 1) FOO(c, 0)
-#define EVIL_MAP_DOWN(func, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
-    (func, EVIL_ORDER_FORWARD, EVIL_EXPAND_CAT(EVIL_DEC_, EVIL_COUNT(__VA_ARGS__)), EVIL_DEC_, __VA_ARGS__)
+#define EVIL_MAP_DOWN(closure, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
+    (closure, EVIL_ORDER_FORWARD, EVIL_EXPAND_CAT(EVIL_DEC_, EVIL_COUNT(__VA_ARGS__)), EVIL_DEC_, __VA_ARGS__)
 
 // same as EVIL_MAP but reverses the order of the items
 // EVIL_MAP_REVERSE(FOO, a, b, c)   -> FOO(c, 0) FOO(b, 1) FOO(a, 2)
-#define EVIL_MAP_REVERSE(func, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
-    (func, EVIL_ORDER_BACKWARD, EVIL_EXPAND_CAT(EVIL_DEC_, EVIL_COUNT(__VA_ARGS__)), EVIL_DEC_, __VA_ARGS__)
+#define EVIL_MAP_REVERSE(closure, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
+    (closure, EVIL_ORDER_BACKWARD, EVIL_EXPAND_CAT(EVIL_DEC_, EVIL_COUNT(__VA_ARGS__)), EVIL_DEC_, __VA_ARGS__)
 
 // same as EVIL_MAP but reverses the order of items and counts down
 // EVIL_MAP_REVERSE_DOWN(FOO, a, b, c)   -> FOO(c, 2) FOO(b, 1) FOO(a, 0)
-#define EVIL_MAP_REVERSE_DOWN(func, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
-    (func, EVIL_ORDER_BACKWARD, 0, EVIL_INC_, __VA_ARGS__)
+#define EVIL_MAP_REVERSE_DOWN(closure, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
+    (closure, EVIL_ORDER_BACKWARD, 0, EVIL_INC_, __VA_ARGS__)
 
 #endif // EVIL
