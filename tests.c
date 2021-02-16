@@ -269,7 +269,14 @@ int main()
     TEST_CASE_MACRO(EVIL_COUNT(a, b, c), 3);
     TEST_CASE_MACRO(EVIL_COUNT(EMPTY_MACRO), 0);
     TEST_CASE_MACRO(EVIL_COUNT("abc", 2, fsdafds, ()), 4);
-    // TEST_CASE_MACRO(EVIL_COUNT(PUT_IN_BRAC), 4); // fails
+    // TEST_CASE_MACRO(EVIL_COUNT(a, PUT_IN_BRAC), 4); // fails
+    printf("\n");
+
+    printf("EVIL_COUNT_AT_LEAST_1:\n");
+    TEST_CASE_MACRO(EVIL_COUNT_AT_LEAST_1(), 1);
+    TEST_CASE_MACRO(EVIL_COUNT_AT_LEAST_1(a), 1);
+    TEST_CASE_MACRO(EVIL_COUNT_AT_LEAST_1("abc", 2, fsdafds, ()), 4);
+    TEST_CASE_MACRO(EVIL_COUNT_AT_LEAST_1(a, PUT_IN_BRAC), 2);
     printf("\n");
 
     return show_final_result() ? 0 : 1;

@@ -186,12 +186,16 @@
 #define _EVIL_NO_PEREN(...) FALSE
 #define _EVIL_YES_PEREN(...) EVIL_NOT(EVIL_IS_THING(__VA_ARGS__))
 
+// same as EVIL_COUNT, except always reports at least 1 item and is not bothered by function-like macros at the end
+// depends on: EVIL_EXPAND_CALL, _EVIL_GEN_COUNT, _EVIL_GEN_COUNT_NUMBERS
+#define EVIL_COUNT_AT_LEAST_1(...) EVIL_EXPAND_CALL(_EVIL_GEN_COUNT, __VA_ARGS__, _EVIL_GEN_COUNT_NUMBERS)
+
 // expands to the number of arguments; empty arguments are counted; zero arguments is handeled correctly
 // NOTE: can not end with a function-like macro!
-// depends on: EVIL_IS_THING, EVIL_EXPAND_CALL, EVIL_EXPAND_CAT, EVIL_EXPAND_TRUE, EVIL_EXPAND_FALSE, EVIL_REMOVE_COMMAS, _EVIL_GEN_REMOVE_COMMAS_..., _EVIL_GEN_COUNT, _EVIL_GEN_COUNT_NUMBERS
+// depends on: EVIL_COUNT_AT_LEAST_1, EVIL_IS_THING, EVIL_EXPAND_CALL, EVIL_EXPAND_CAT, EVIL_EXPAND_TRUE, EVIL_EXPAND_FALSE, EVIL_REMOVE_COMMAS, _EVIL_GEN_REMOVE_COMMAS_..., _EVIL_GEN_COUNT, _EVIL_GEN_COUNT_NUMBERS
 #define EVIL_COUNT(...) EVIL_IF_ELSE \
     (EVIL_IS_THING(__VA_ARGS__)) \
-    (EVIL_EXPAND_CALL(_EVIL_GEN_COUNT, __VA_ARGS__, _EVIL_GEN_COUNT_NUMBERS)) \
+    (EVIL_COUNT_AT_LEAST_1(__VA_ARGS__)) \
     (0)
 
 // repeats func count number of times
