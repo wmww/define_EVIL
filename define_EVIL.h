@@ -106,7 +106,9 @@
 // EVIL_IF(TRUE)(abc)    -> abc
 // EVIL_IF(FALSE)(abc)   -> [empty]
 // depends on: EVIL_NOT, EVIL_EXPAND_CAT, EVIL_EXPAND_TRUE, EVIL_EXPAND_FALSE
-#define EVIL_IF(cond) EVIL_EXPAND_CAT(EVIL_EXPAND_, cond)
+#define EVIL_IF(cond) EVIL_EXPAND_CAT(_EVIL_IF_COND_WAS_, cond)
+#define _EVIL_IF_COND_WAS_TRUE(...) __VA_ARGS__
+#define _EVIL_IF_COND_WAS_FALSE(...)
 
 // expands to the thing in the second set of parentheses only if the thing in the first set is FALSE
 // EVIL_IF_NOT(TRUE)(abc)    -> [empty]
@@ -157,12 +159,12 @@
 // IS_THING(FN_MACRO)           -> <fails to compile>
 // IS_THING(arg, FN_MACRO)      -> <fails to compile>
 // I realize how much of a clusterfuck this is. If you can make it cleaner without failing any tests, plz submit PR
-#define EVIL_IS_THING(...) _EVIL_IS_THING_A(EVIL_EXPAND_CAT(_, EVIL_EXPAND(_EVIL_IS_THING_D EVIL_REMOVE_COMMAS(__VA_ARGS__))))
+#define EVIL_IS_THING(...) _EVIL_IS_THING_A(EVIL_EXPAND_CAT(_, EVIL_EXPAND(_EVIL_IS_THING_LOOK_FOR_PEREN EVIL_REMOVE_COMMAS(__VA_ARGS__))))
 #define _EVIL_IS_THING_A(a) EVIL_EXPAND_CALL(_EVIL_IS_THING_C, _EVIL_IS_THING_B a (), TRUE)
-#define _EVIL_IS_THING_B() dummy, FALSE
+#define _EVIL_IS_THING_B() was_not_thing, FALSE
 #define _EVIL_IS_THING_C(a, b, ...) b
-#define _EVIL_IS_THING_D(...) dummy
-#define __EVIL_IS_THING_D
+#define _EVIL_IS_THING_LOOK_FOR_PEREN(...) was_thing_with_peren
+#define __EVIL_IS_THING_LOOK_FOR_PEREN
 
 // checks if the argument(s) are completely surrounded by parenthesis
 // NOTE: If it starts with parentheses, it can not end with a function-like macro! (see below)
