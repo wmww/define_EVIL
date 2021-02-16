@@ -150,12 +150,14 @@
 
 // # Info Getters
 
-// IS_THING(one_or_more, args)  -> TRUE
-// IS_THING()                   -> FALSE
-// NOTE: the final arg can not be the name of a function-like macro!
+// NOTE: the final arg can not be the name of a function-like macro! (see below)
 // a common way to use is to make two macros (ex. EXAMPLE_TRUE and EXAMPLE_FALSE) and concat your prefix with the
 // result of this macro, so you can do different things depending on the thingyness
 // the last argument must not be a function-like macro
+// IS_THING(one_or_more, args)  -> TRUE
+// IS_THING()                   -> FALSE
+// IS_THING(FN_MACRO)           -> <fails to compile>
+// IS_THING(arg, FN_MACRO)      -> <fails to compile>
 // depends on: EVIL_EXPAND_CALL, EVIL_EXPAND_CAT, EVIL_REMOVE_COMMAS, _EVIL_GEN_REMOVE_COMMAS_...
 // I realize how much of a clusterfuck this is. If you can make it cleaner without failing any tests, plz submit PR
 #define EVIL_IS_THING(...) _EVIL_IS_THING_A(EVIL_EXPAND_CAT(_, EVIL_EXPAND(_EVIL_IS_THING_D EVIL_REMOVE_COMMAS(__VA_ARGS__))))
@@ -166,6 +168,7 @@
 #define __EVIL_IS_THING_D
 
 // checks if the argument(s) are completely surrounded by parenthesis
+// NOTE: If it starts with parentheses, it can not end with a function-like macro! (see below)
 // EVIL_HAS_PEREN()                 -> FALSE
 // EVIL_HAS_PEREN("a")              -> FALSE
 // EVIL_HAS_PEREN(6, "a")           -> FALSE
@@ -173,6 +176,7 @@
 // EVIL_HAS_PEREN(())               -> TRUE
 // EVIL_HAS_PEREN((a, 6, "a"))      -> TRUE
 // EVIL_HAS_PEREN((a) (b))          -> FALSE
+// EVIL_HAS_PEREN((a) FN_MACRO)     -> <fails to compile>
 // depends on: EVIL_IS_THING, EVIL_NOT, EVIL_EXPAND, EVIL_EXPAND_CALL, EVIL_EXPAND_CAT, EVIL_REMOVE_COMMAS, _EVIL_GEN_REMOVE_COMMAS_...
 #define EVIL_HAS_PEREN(...) _EVIL_HAS_PEREN_C(EVIL_EXPAND(_EVIL_HAS_PEREN_A __VA_ARGS__))
 #define _EVIL_HAS_PEREN_A(...) _EVIL_HAS_PEREN_B
@@ -183,7 +187,7 @@
 #define _EVIL_YES_PEREN(...) EVIL_NOT(EVIL_IS_THING(__VA_ARGS__))
 
 // expands to the number of arguments; empty arguments are counted; zero arguments is handeled correctly
-// the last argument must not be a function-like macro
+// NOTE: can not end with a function-like macro!
 // depends on: EVIL_IS_THING, EVIL_EXPAND_CALL, EVIL_EXPAND_CAT, EVIL_EXPAND_TRUE, EVIL_EXPAND_FALSE, EVIL_REMOVE_COMMAS, _EVIL_GEN_REMOVE_COMMAS_..., _EVIL_GEN_COUNT, _EVIL_GEN_COUNT_NUMBERS
 #define EVIL_COUNT(...) EVIL_IF_ELSE \
     (EVIL_IS_THING(__VA_ARGS__)) \
