@@ -20,7 +20,9 @@ Complex macros are useful when pushing the limits of what C/C++ can be. For exam
 To run the tests, just clone this repo, `cd` into it and run `make test`. Make will run generator.sh if needed.
 
 ## Using
-To use in your C or C++ project, simply copy `define_EVIL.h` and `generated_EVIL.h` into your project and `#include "define_EVIL.h"`. You may want to copy the contents of `generated_EVIL.h` into `define_EVIL.h` to make managing both easier. You may also want to only grab the macros you need. I've tried to document the dependencies of each macro to make this easier.
+To use in your C or C++ project, simply copy `define_EVIL.h` and `generated_EVIL.h` into your project and `#include "define_EVIL.h"`. You may want to copy the contents of `generated_EVIL.h` into `define_EVIL.h` to make managing both easier.
+
+You can also grab only the individual macros you need. The dependencies of the simpler ones are documented to make this easier.
 
 To see what macros are available and how they work you can either read the inline docs in the main header or look at the tests. It's a little perplexing at first but really not too bad (just don't try to understand how the complicated ones work, you'll regret it).
 

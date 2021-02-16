@@ -128,7 +128,6 @@
 // expand to TRUE if two tokens are known to be equal, FALSE otherwise
 // only works if there is an ENABLE_EQ_*_* defined for the tokens
 // below EVIL_ENABLE_EQ is defined for booleans, void and empty values, generated.h has it defined for small numbers.
-// depends on: idk man, basically everything
 #define EVIL_EQ(a_val, b_val) EVIL_IF_ELSE \
     (EVIL_IS_THING(EVIL_EXPAND_CAT(EVIL_ENABLE_EQ_, EVIL_EXPAND_CAT(a_val, EVIL_EXPAND_CAT(_, a_val))))) \
     (EVIL_EXPAND_CALL(EVIL_TO_STRING, You must define \
@@ -139,7 +138,6 @@
     (EVIL_NOT(EVIL_IS_THING(EVIL_EXPAND_CAT(EVIL_ENABLE_EQ_, EVIL_EXPAND_CAT(a_val, EVIL_EXPAND_CAT(_, b_val))))))
 
 // expands to TRUE if the two tokens are not equal (see EVIL_EQ)
-// depends on: EVIL_EQ, so basically everything
 #define EVIL_NE(a, b) EVIL_NOT(EVIL_EQ(a, b))
 
 // enable equality check for various common values, you can add more elsewhere
@@ -158,7 +156,6 @@
 // IS_THING()                   -> FALSE
 // IS_THING(FN_MACRO)           -> <fails to compile>
 // IS_THING(arg, FN_MACRO)      -> <fails to compile>
-// depends on: EVIL_EXPAND_CALL, EVIL_EXPAND_CAT, EVIL_REMOVE_COMMAS, _EVIL_GEN_REMOVE_COMMAS_...
 // I realize how much of a clusterfuck this is. If you can make it cleaner without failing any tests, plz submit PR
 #define EVIL_IS_THING(...) _EVIL_IS_THING_A(EVIL_EXPAND_CAT(_, EVIL_EXPAND(_EVIL_IS_THING_D EVIL_REMOVE_COMMAS(__VA_ARGS__))))
 #define _EVIL_IS_THING_A(a) EVIL_EXPAND_CALL(_EVIL_IS_THING_C, _EVIL_IS_THING_B a (), TRUE)
@@ -177,7 +174,6 @@
 // EVIL_HAS_PEREN((a, 6, "a"))      -> TRUE
 // EVIL_HAS_PEREN((a) (b))          -> FALSE
 // EVIL_HAS_PEREN((a) FN_MACRO)     -> <fails to compile>
-// depends on: EVIL_IS_THING, EVIL_NOT, EVIL_EXPAND, EVIL_EXPAND_CALL, EVIL_EXPAND_CAT, EVIL_REMOVE_COMMAS, _EVIL_GEN_REMOVE_COMMAS_...
 #define EVIL_HAS_PEREN(...) _EVIL_HAS_PEREN_C(EVIL_EXPAND(_EVIL_HAS_PEREN_A __VA_ARGS__))
 #define _EVIL_HAS_PEREN_A(...) _EVIL_HAS_PEREN_B
 #define _EVIL_OTHER_EVIL_HAS_PEREN_A _EVIL_NO_PEREN(
@@ -187,12 +183,10 @@
 #define _EVIL_YES_PEREN(...) EVIL_NOT(EVIL_IS_THING(__VA_ARGS__))
 
 // same as EVIL_COUNT, except always reports at least 1 item and is not bothered by function-like macros at the end
-// depends on: EVIL_EXPAND_CALL, _EVIL_GEN_COUNT, _EVIL_GEN_COUNT_NUMBERS
 #define EVIL_COUNT_AT_LEAST_1(...) EVIL_EXPAND_CALL(_EVIL_GEN_COUNT, __VA_ARGS__, _EVIL_GEN_COUNT_NUMBERS)
 
 // expands to the number of arguments; empty arguments are counted; zero arguments is handeled correctly
 // NOTE: can not end with a function-like macro!
-// depends on: EVIL_COUNT_AT_LEAST_1, EVIL_IS_THING, EVIL_EXPAND_CALL, EVIL_EXPAND_CAT, EVIL_EXPAND_TRUE, EVIL_EXPAND_FALSE, EVIL_REMOVE_COMMAS, _EVIL_GEN_REMOVE_COMMAS_..., _EVIL_GEN_COUNT, _EVIL_GEN_COUNT_NUMBERS
 #define EVIL_COUNT(...) EVIL_IF_ELSE \
     (EVIL_IS_THING(__VA_ARGS__)) \
     (EVIL_COUNT_AT_LEAST_1(__VA_ARGS__)) \
@@ -202,36 +196,30 @@
 // func is expected to be a function-like macro that takes the current index as it's only argument
 // EVIL_REPEAT(FOO, 3)    -> FOO(0) FOO(1) FOO(2)
 // EVIL_REPEAT(FOO, 0)    -> [empty]
-// depends on: _EVIL_GEN_REPEAT_..., EVIL_ORDER_FORWARD
 #define EVIL_REPEAT(func, count) _EVIL_GEN_REPEAT_##count(func, EVIL_ORDER_FORWARD)
 
 // same as EVIL_REPEAT, but in reverse order
 // EVIL_REPEAT(FOO, 3)    -> FOO(2) FOO(1) FOO(0)
-// depends on: _EVIL_GEN_REPEAT_..., EVIL_ORDER_BACKWARD
 #define EVIL_REPEAT_DOWN(func, count) _EVIL_GEN_REPEAT_##count(func, EVIL_ORDER_BACKWARD)
 
 // applies the given macro to all additional arguments
 // macro should accept item and index
 // EVIL_MAP(FOO, a, b, c)   -> FOO(a, 0) FOO(b, 1) FOO(c, 2)
-// depends on: EVIL_EXPAND_CAT, EVIL_COUNT, _EVIL_GEN_MAP_..., EVIL_INC_..., EVIL_ORDER_FORWARD
 #define EVIL_MAP(func, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
     (func, EVIL_ORDER_FORWARD, 0, EVIL_INC_, __VA_ARGS__)
 
 // same as EVIL_MAP, but indexes count down instead of up
 // EVIL_MAP_DOWN(FOO, a, b, c)   -> FOO(a, 2) FOO(b, 1) FOO(c, 0)
-// depends on: EVIL_EXPAND_CAT, EVIL_COUNT, _EVIL_GEN_MAP_..., EVIL_DEC_..., EVIL_ORDER_FORWARD
 #define EVIL_MAP_DOWN(func, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
     (func, EVIL_ORDER_FORWARD, EVIL_EXPAND_CAT(EVIL_DEC_, EVIL_COUNT(__VA_ARGS__)), EVIL_DEC_, __VA_ARGS__)
 
 // same as EVIL_MAP but reverses the order of the items
 // EVIL_MAP_REVERSE(FOO, a, b, c)   -> FOO(c, 0) FOO(b, 1) FOO(a, 2)
-// depends on: EVIL_EXPAND_CAT, EVIL_COUNT, _EVIL_GEN_MAP_..., EVIL_DEC_..., EVIL_ORDER_BACKWARD
 #define EVIL_MAP_REVERSE(func, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
     (func, EVIL_ORDER_BACKWARD, EVIL_EXPAND_CAT(EVIL_DEC_, EVIL_COUNT(__VA_ARGS__)), EVIL_DEC_, __VA_ARGS__)
 
 // same as EVIL_MAP but reverses the order of items and counts down
 // EVIL_MAP_REVERSE_DOWN(FOO, a, b, c)   -> FOO(c, 2) FOO(b, 1) FOO(a, 0)
-// depends on: EVIL_EXPAND_CAT, EVIL_COUNT, _EVIL_GEN_MAP_..., EVIL_INC_..., EVIL_ORDER_BACKWARD
 #define EVIL_MAP_REVERSE_DOWN(func, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
     (func, EVIL_ORDER_BACKWARD, 0, EVIL_INC_, __VA_ARGS__)
 
