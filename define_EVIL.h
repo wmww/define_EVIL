@@ -200,7 +200,7 @@
 // EVIL_CLOSURE_INVOKE((MACRO, a, b))   -> MACRO(a, b)
 // EVIL_CLOSURE_INVOKE((MACRO), x, y)   -> MACRO(x, y)
 // EVIL_CLOSURE_INVOKE((MACRO, a), x)   -> MACRO(a, x)
-#define EVIL_CLOSURE_INVOKE(...) EVIL_EXPAND_CALL (\
+#define EVIL_CLOSURE_INVOKE(...) _EVIL_CLOSURE_INVOKE_EXPAND_CALL (\
     _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(__VA_ARGS__), \
         EVIL_EXPAND( \
             _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(__VA_ARGS__) \
@@ -211,6 +211,8 @@
             _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS(__VA_ARGS__)))
 #define _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(first, ...) first
 #define _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS(macro, ...) __VA_ARGS__
+// everything blows up if we use the normal EXPAND_CALL here. We're probably somehow calling it recursivly
+#define _EVIL_CLOSURE_INVOKE_EXPAND_CALL(macro, ...) macro(__VA_ARGS__)
 
 // repeats func count number of times
 // func is expected to be a function-like macro that takes the current index as it's only argument
