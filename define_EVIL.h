@@ -218,11 +218,11 @@
 // func is expected to be a function-like macro that takes the current index as it's only argument
 // EVIL_REPEAT(FOO, 3)    -> FOO(0) FOO(1) FOO(2)
 // EVIL_REPEAT(FOO, 0)    -> [empty]
-#define EVIL_REPEAT(func, count) _EVIL_GEN_REPEAT_##count(func, EVIL_ORDER_FORWARD)
+#define EVIL_REPEAT(closure, count) _EVIL_GEN_REPEAT_##count(closure, EVIL_ORDER_FORWARD)
 
 // same as EVIL_REPEAT, but in reverse order
 // EVIL_REPEAT(FOO, 3)    -> FOO(2) FOO(1) FOO(0)
-#define EVIL_REPEAT_DOWN(func, count) _EVIL_GEN_REPEAT_##count(func, EVIL_ORDER_BACKWARD)
+#define EVIL_REPEAT_DOWN(closure, count) _EVIL_GEN_REPEAT_##count(closure, EVIL_ORDER_BACKWARD)
 
 // applies the given macro to all additional arguments
 // macro should accept item and index
