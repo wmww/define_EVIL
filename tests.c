@@ -65,6 +65,7 @@ int show_final_result() {
 #define TAKE_0() []
 #define TAKE_1(a) [a]
 #define TAKE_2(a, b) [a, b]
+#define TAKE_3(a, b, c) [a, b, c]
 #define TAKE_4(a, b, c, d) [a, b, c, d]
 #define TAKE_ANY(...) [__VA_ARGS__]
 #define DIVIDER(a, i) EVIL_IF(EVIL_NOT(EVIL_EQ(0, i)))(|) [a, i]
@@ -248,39 +249,45 @@ int main()
     printf("\n");
 
     printf("EVIL_MAP:\n");
-    TEST_CASE_MACRO(EVIL_MAP(TAKE_2, a, b, c, d), [a, 0] [b, 1] [c, 2] [d, 3]);
-    TEST_CASE_MACRO(EVIL_MAP(TAKE_2, a), [a, 0]);
-    TEST_CASE_MACRO(EVIL_MAP(TAKE_2), );
-    TEST_CASE_MACRO(EVIL_MAP(DIVIDER, a, b, c, d), [a, 0] | [b, 1] | [c, 2] | [d, 3]);
-    TEST_CASE_MACRO(EVIL_MAP(DIVIDER, a), [a, 0]);
-    TEST_CASE_MACRO(EVIL_MAP(DIVIDER), );
+    TEST_CASE_MACRO(EVIL_MAP((TAKE_2), a, b, c, d), [a, 0] [b, 1] [c, 2] [d, 3]);
+    TEST_CASE_MACRO(EVIL_MAP((TAKE_2), a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP((TAKE_2)), );
+    TEST_CASE_MACRO(EVIL_MAP((TAKE_3, "*")), );
+    TEST_CASE_MACRO(EVIL_MAP((TAKE_3, "*"), a), ["*", a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP((TAKE_3, "*"), a, b, c), ["*", a, 0] ["*", b, 1] ["*", c, 2]);
+    TEST_CASE_MACRO(EVIL_MAP((DIVIDER), a, b, c, d), [a, 0] | [b, 1] | [c, 2] | [d, 3]);
+    TEST_CASE_MACRO(EVIL_MAP((DIVIDER), a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP((DIVIDER)), );
     printf("\n");
 
     printf("EVIL_MAP_REVERSE:\n");
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE(TAKE_2, a, b, c, d), [d, 0] [c, 1] [b, 2] [a, 3]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE(TAKE_2, a), [a, 0]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE(TAKE_2), );
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE(DIVIDER, a, b, c, d), [d, 0] | [c, 1] | [b, 2] | [a, 3]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE(DIVIDER, a), [a, 0]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE(DIVIDER), );
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE((TAKE_2), a, b, c, d), [d, 0] [c, 1] [b, 2] [a, 3]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE((TAKE_2), a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE((TAKE_2)), );
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE((TAKE_4, x, y), a, b), [x, y, b, 0] [x, y, a, 1]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE((DIVIDER), a, b, c, d), [d, 0] | [c, 1] | [b, 2] | [a, 3]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE((DIVIDER), a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE((DIVIDER)), );
     printf("\n");
 
     printf("EVIL_MAP_DOWN:\n");
-    TEST_CASE_MACRO(EVIL_MAP_DOWN(TAKE_2, a, b, c, d), [a, 3] [b, 2] [c, 1] [d, 0]);
-    TEST_CASE_MACRO(EVIL_MAP_DOWN(TAKE_2, a), [a, 0]);
-    TEST_CASE_MACRO(EVIL_MAP_DOWN(TAKE_2), );
-    TEST_CASE_MACRO(EVIL_MAP_DOWN(DIVIDER_DOWN, a, b, c, d), [a, 3] | [b, 2] | [c, 1] | [d, 0]);
-    TEST_CASE_MACRO(EVIL_MAP_DOWN(DIVIDER_DOWN, a), [a, 0]);
-    TEST_CASE_MACRO(EVIL_MAP_DOWN(DIVIDER_DOWN), );
+    TEST_CASE_MACRO(EVIL_MAP_DOWN((TAKE_2), a, b, c, d), [a, 3] [b, 2] [c, 1] [d, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_DOWN((TAKE_2), a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_DOWN((TAKE_2)), );
+    TEST_CASE_MACRO(EVIL_MAP_DOWN((TAKE_3, TAKE_0), a, b, c, d), [TAKE_0, a, 3] [TAKE_0, b, 2] [TAKE_0, c, 1] [TAKE_0, d, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_DOWN((DIVIDER_DOWN), a, b, c, d), [a, 3] | [b, 2] | [c, 1] | [d, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_DOWN((DIVIDER_DOWN), a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_DOWN((DIVIDER_DOWN)), );
     printf("\n");
 
     printf("EVIL_MAP_REVERSE_DOWN:\n");
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(TAKE_2, a, b, c, d), [d, 3] [c, 2] [b, 1] [a, 0]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(TAKE_2, a), [a, 0]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(TAKE_2), );
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(DIVIDER_DOWN, a, b, c, d), [d, 3] | [c, 2] | [b, 1] | [a, 0]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(DIVIDER_DOWN, a), [a, 0]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(DIVIDER_DOWN), );
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN((TAKE_2), a, b, c, d), [d, 3] [c, 2] [b, 1] [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN((TAKE_2), a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN((TAKE_2)), );
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN((TAKE_3, ()), a), [(), a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN((DIVIDER_DOWN), a, b, c, d), [d, 3] | [c, 2] | [b, 1] | [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN((DIVIDER_DOWN), a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN((DIVIDER_DOWN)), );
     printf("\n");
 
     printf("EVIL_COUNT:\n");

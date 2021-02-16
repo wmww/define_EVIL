@@ -103,10 +103,10 @@ done
 printf "\n"
 
 printf "// EVIL_MAP\n"
-printf "#define _${prefix}_MAP_0(macro, order, index, dir, empty)\n"
-printf "#define _${prefix}_MAP_1(macro, order, index, dir, item) macro(item, index)\n"
+printf "#define _${prefix}_MAP_0(closure, order, index, dir, empty)\n"
+printf "#define _${prefix}_MAP_1(closure, order, index, dir, item) EVIL_CLOSURE_INVOKE(closure, item, index)\n"
 for (( i=2; i<=$max_num; i++ ))
 do
-    printf "#define _${prefix}_MAP_$i(macro, order, index, dir, item, ...) order(macro(item, index), _${prefix}_MAP_$[i - 1](macro, order, EVIL_EXPAND_CAT(dir, index), dir, __VA_ARGS__))\n"
+    printf "#define _${prefix}_MAP_$i(closure, order, index, dir, item, ...) order(EVIL_CLOSURE_INVOKE(closure, item, index), _${prefix}_MAP_$[i - 1](closure, order, EVIL_EXPAND_CAT(dir, index), dir, __VA_ARGS__))\n"
 done
 printf "\n"
