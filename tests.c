@@ -188,6 +188,12 @@ int main()
     TEST_CASE_MACRO(EVIL_HAS_PEREN(a (b)), FALSE);
     TEST_CASE_MACRO(EVIL_HAS_PEREN((a) (b)), FALSE);
     TEST_CASE_MACRO(EVIL_HAS_PEREN((a) c (b)), FALSE);
+
+    // Test that it works with a function-like macro
+    TEST_CASE_MACRO(EVIL_HAS_PEREN((PUT_IN_BRAC)), TRUE);
+    TEST_CASE_MACRO(EVIL_HAS_PEREN((a, PUT_IN_BRAC)), TRUE);
+    TEST_CASE_MACRO(EVIL_HAS_PEREN(PUT_IN_BRAC), FALSE);
+    TEST_CASE_MACRO(EVIL_HAS_PEREN(a, PUT_IN_BRAC), FALSE);
     printf("\n");
 
     printf("REPEAT:\n");
