@@ -62,9 +62,13 @@ int show_final_result() {
 
 #define EMPTY_MACRO
 #define STAR_MACRO *
-#define PUT_IN_BRAC(a, i) [i: a]
-#define PUT_IN_BRAC_DIVIDER(a, i) EVIL_IF(EVIL_NOT(EVIL_EQ(0, i)))(|) [i: a]
-#define PUT_IN_BRAC_DIVIDER_DOWN(a, i) [i: a] EVIL_IF(EVIL_NOT(EVIL_EQ(0, i)))(|)
+#define TAKE_0() []
+#define TAKE_1(a) [a]
+#define TAKE_2(a, b) [a, b]
+#define TAKE_4(a, b, c, d) [a, b, c, d]
+#define TAKE_ANY(...) [__VA_ARGS__]
+#define DIVIDER(a, i) EVIL_IF(EVIL_NOT(EVIL_EQ(0, i)))(|) [a, i]
+#define DIVIDER_DOWN(a, i) [a, i] EVIL_IF(EVIL_NOT(EVIL_EQ(0, i)))(|)
 #define ADD_T(i) T_##i
 #define ADD_T_DIVIDER(i) EVIL_IF(EVIL_NOT(EVIL_EQ(0, i)))(|) T_##i
 #define ADD_T_DIVIDER_DOWN(i) T_##i EVIL_IF(EVIL_NOT(EVIL_EQ(0, i)))(|)
@@ -78,6 +82,8 @@ int main()
     #define XYZW xyzw
     #define xyzw_a foo
     TEST_CASE_MACRO(EVIL_EXPAND_CALL(EVIL_TO_STRING, XYZW), "xyzw");
+    TEST_CASE_MACRO(EVIL_EXPAND_CALL(TAKE_0, ), []);
+    TEST_CASE_MACRO(EVIL_EXPAND_CALL(TAKE_0, EVIL_EXPAND_CAT(EMPTY, _MACRO)), []);
     TEST_CASE_MACRO(EVIL_EXPAND_CAT(XYZW, _a), foo);
     TEST_CASE_MACRO(EVIL_INC_0, 1);
     TEST_CASE_MACRO(EVIL_EXPAND_CAT(EVIL_INC_, EVIL_EXPAND_CAT(EVIL_INC_, 12)), 14);
@@ -204,11 +210,11 @@ int main()
     TEST_CASE_MACRO(EVIL_HAS_PEREN((a) (b)), FALSE);
     TEST_CASE_MACRO(EVIL_HAS_PEREN((a) c (b)), FALSE);
     TEST_CASE_MACRO(EVIL_HAS_PEREN((*)), TRUE);
-    TEST_CASE_MACRO(EVIL_HAS_PEREN((PUT_IN_BRAC)), TRUE);
-    TEST_CASE_MACRO(EVIL_HAS_PEREN((a, PUT_IN_BRAC)), TRUE);
-    TEST_CASE_MACRO(EVIL_HAS_PEREN(PUT_IN_BRAC), FALSE);
-    TEST_CASE_MACRO(EVIL_HAS_PEREN(a, PUT_IN_BRAC), FALSE);
-    // TEST_CASE_MACRO(EVIL_HAS_PEREN((), PUT_IN_BRAC), FALSE); // fails
+    TEST_CASE_MACRO(EVIL_HAS_PEREN((TAKE_0)), TRUE);
+    TEST_CASE_MACRO(EVIL_HAS_PEREN((a, TAKE_0)), TRUE);
+    TEST_CASE_MACRO(EVIL_HAS_PEREN(TAKE_0), FALSE);
+    TEST_CASE_MACRO(EVIL_HAS_PEREN(a, TAKE_0), FALSE);
+    // TEST_CASE_MACRO(EVIL_HAS_PEREN((), TAKE_0), FALSE); // fails
     printf("\n");
 
     printf("EVIL_REPEAT:\n");
@@ -227,39 +233,39 @@ int main()
     printf("\n");
 
     printf("EVIL_MAP:\n");
-    TEST_CASE_MACRO(EVIL_MAP(PUT_IN_BRAC, a, b, c, d), [0: a] [1: b] [2: c] [3: d]);
-    TEST_CASE_MACRO(EVIL_MAP(PUT_IN_BRAC, a), [0: a]);
-    TEST_CASE_MACRO(EVIL_MAP(PUT_IN_BRAC), );
-    TEST_CASE_MACRO(EVIL_MAP(PUT_IN_BRAC_DIVIDER, a, b, c, d), [0: a] | [1: b] | [2: c] | [3: d]);
-    TEST_CASE_MACRO(EVIL_MAP(PUT_IN_BRAC_DIVIDER, a), [0: a]);
-    TEST_CASE_MACRO(EVIL_MAP(PUT_IN_BRAC_DIVIDER), );
+    TEST_CASE_MACRO(EVIL_MAP(TAKE_2, a, b, c, d), [a, 0] [b, 1] [c, 2] [d, 3]);
+    TEST_CASE_MACRO(EVIL_MAP(TAKE_2, a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP(TAKE_2), );
+    TEST_CASE_MACRO(EVIL_MAP(DIVIDER, a, b, c, d), [a, 0] | [b, 1] | [c, 2] | [d, 3]);
+    TEST_CASE_MACRO(EVIL_MAP(DIVIDER, a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP(DIVIDER), );
     printf("\n");
 
     printf("EVIL_MAP_REVERSE:\n");
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE(PUT_IN_BRAC, a, b, c, d), [0: d] [1: c] [2: b] [3: a]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE(PUT_IN_BRAC, a), [0: a]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE(PUT_IN_BRAC), );
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE(PUT_IN_BRAC_DIVIDER, a, b, c, d), [0: d] | [1: c] | [2: b] | [3: a]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE(PUT_IN_BRAC_DIVIDER, a), [0: a]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE(PUT_IN_BRAC_DIVIDER), );
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE(TAKE_2, a, b, c, d), [d, 0] [c, 1] [b, 2] [a, 3]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE(TAKE_2, a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE(TAKE_2), );
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE(DIVIDER, a, b, c, d), [d, 0] | [c, 1] | [b, 2] | [a, 3]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE(DIVIDER, a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE(DIVIDER), );
     printf("\n");
 
     printf("EVIL_MAP_DOWN:\n");
-    TEST_CASE_MACRO(EVIL_MAP_DOWN(PUT_IN_BRAC, a, b, c, d), [3: a] [2: b] [1: c] [0: d]);
-    TEST_CASE_MACRO(EVIL_MAP_DOWN(PUT_IN_BRAC, a), [0: a]);
-    TEST_CASE_MACRO(EVIL_MAP_DOWN(PUT_IN_BRAC), );
-    TEST_CASE_MACRO(EVIL_MAP_DOWN(PUT_IN_BRAC_DIVIDER_DOWN, a, b, c, d), [3: a] | [2: b] | [1: c] | [0: d]);
-    TEST_CASE_MACRO(EVIL_MAP_DOWN(PUT_IN_BRAC_DIVIDER_DOWN, a), [0: a]);
-    TEST_CASE_MACRO(EVIL_MAP_DOWN(PUT_IN_BRAC_DIVIDER_DOWN), );
+    TEST_CASE_MACRO(EVIL_MAP_DOWN(TAKE_2, a, b, c, d), [a, 3] [b, 2] [c, 1] [d, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_DOWN(TAKE_2, a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_DOWN(TAKE_2), );
+    TEST_CASE_MACRO(EVIL_MAP_DOWN(DIVIDER_DOWN, a, b, c, d), [a, 3] | [b, 2] | [c, 1] | [d, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_DOWN(DIVIDER_DOWN, a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_DOWN(DIVIDER_DOWN), );
     printf("\n");
 
     printf("EVIL_MAP_REVERSE_DOWN:\n");
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(PUT_IN_BRAC, a, b, c, d), [3: d] [2: c] [1: b] [0: a]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(PUT_IN_BRAC, a), [0: a]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(PUT_IN_BRAC), );
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(PUT_IN_BRAC_DIVIDER_DOWN, a, b, c, d), [3: d] | [2: c] | [1: b] | [0: a]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(PUT_IN_BRAC_DIVIDER_DOWN, a), [0: a]);
-    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(PUT_IN_BRAC_DIVIDER_DOWN), );
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(TAKE_2, a, b, c, d), [d, 3] [c, 2] [b, 1] [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(TAKE_2, a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(TAKE_2), );
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(DIVIDER_DOWN, a, b, c, d), [d, 3] | [c, 2] | [b, 1] | [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(DIVIDER_DOWN, a), [a, 0]);
+    TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN(DIVIDER_DOWN), );
     printf("\n");
 
     printf("EVIL_COUNT:\n");
@@ -269,14 +275,14 @@ int main()
     TEST_CASE_MACRO(EVIL_COUNT(a, b, c), 3);
     TEST_CASE_MACRO(EVIL_COUNT(EMPTY_MACRO), 0);
     TEST_CASE_MACRO(EVIL_COUNT("abc", 2, fsdafds, ()), 4);
-    // TEST_CASE_MACRO(EVIL_COUNT(a, PUT_IN_BRAC), 4); // fails
+    // TEST_CASE_MACRO(EVIL_COUNT(a, TAKE_0), 4); // fails
     printf("\n");
 
     printf("EVIL_COUNT_AT_LEAST_1:\n");
     TEST_CASE_MACRO(EVIL_COUNT_AT_LEAST_1(), 1);
     TEST_CASE_MACRO(EVIL_COUNT_AT_LEAST_1(a), 1);
     TEST_CASE_MACRO(EVIL_COUNT_AT_LEAST_1("abc", 2, fsdafds, ()), 4);
-    TEST_CASE_MACRO(EVIL_COUNT_AT_LEAST_1(a, PUT_IN_BRAC), 2);
+    TEST_CASE_MACRO(EVIL_COUNT_AT_LEAST_1(a, TAKE_0), 2);
     printf("\n");
 
     return show_final_result() ? 0 : 1;
