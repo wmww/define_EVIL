@@ -61,23 +61,35 @@ done
 printf "\n"
 
 printf "// EVIL_REMOVE_COMMAS\n"
+printf "#define _${prefix}_REMOVE_COMMAS(...) _${prefix}_REMOVE_COMMAS_A(__VA_ARGS__"
 for (( i=0; i<$max_num; i++ ))
 do
-	printf "#define _${prefix}_REMOVE_COMMAS_$i(a, ...) a _${prefix}_REMOVE_COMMAS_$[i + 1](__VA_ARGS__)\n"
+    printf ","
 done
-printf "#define _${prefix}_REMOVE_COMMAS_$max_num(a, ...) a\n\n"
+printf ")\n"
+printf "#define _${prefix}_REMOVE_COMMAS_A("
+for (( i=0; i<$max_num; i++ ))
+do
+    printf "_$i, "
+done
+printf "...) "
+for (( i=0; i<$max_num; i++ ))
+do
+    printf "_$i "
+done
+printf "\n\n"
 
 printf "// EVIL_COUNT\n"
 printf "#define _${prefix}_COUNT_NUMBERS "
 for (( i=$max_num; i>=2; i-- ))
 do
-	printf "$i, "
+    printf "$i, "
 done
 printf "1\n"
 printf "#define _${prefix}_COUNT("
 for (( i=0; i<$max_num; i++ ))
 do
-	printf "_$i, "
+    printf "_$i, "
 done
 printf "n, ...) n\n\n"
 
@@ -86,7 +98,7 @@ printf "#define _${prefix}_REPEAT_0(macro, order)\n"
 printf "#define _${prefix}_REPEAT_1(macro, order) macro(0)\n"
 for (( i=2; i<=$max_num; i++ ))
 do
-	printf "#define _${prefix}_REPEAT_$i(macro, order) order(_${prefix}_REPEAT_$[i - 1](macro, order), macro($[i - 1]))\n"
+    printf "#define _${prefix}_REPEAT_$i(macro, order) order(_${prefix}_REPEAT_$[i - 1](macro, order), macro($[i - 1]))\n"
 done
 printf "\n"
 
@@ -95,6 +107,6 @@ printf "#define _${prefix}_MAP_0(macro, order, index, dir, empty)\n"
 printf "#define _${prefix}_MAP_1(macro, order, index, dir, item) macro(item, index)\n"
 for (( i=2; i<=$max_num; i++ ))
 do
-	printf "#define _${prefix}_MAP_$i(macro, order, index, dir, item, ...) order(macro(item, index), _${prefix}_MAP_$[i - 1](macro, order, EVIL_EXPAND_CAT(dir, index), dir, __VA_ARGS__))\n"
+    printf "#define _${prefix}_MAP_$i(macro, order, index, dir, item, ...) order(macro(item, index), _${prefix}_MAP_$[i - 1](macro, order, EVIL_EXPAND_CAT(dir, index), dir, __VA_ARGS__))\n"
 done
 printf "\n"

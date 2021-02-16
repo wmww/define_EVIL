@@ -58,8 +58,8 @@
 #define EVIL_EXPAND_FALSE(...)
 
 // removes commas in a list of arguments, leaves a space between each one
-// depends on: _EVIL_GEN_REMOVE_COMMAS_...
-#define EVIL_REMOVE_COMMAS(...) _EVIL_GEN_REMOVE_COMMAS_0(__VA_ARGS__)
+// depends on: _EVIL_GEN_REMOVE_COMMAS
+#define EVIL_REMOVE_COMMAS(...) _EVIL_GEN_REMOVE_COMMAS(__VA_ARGS__)
 
 // # Boolean operations
 // these expand to the result of boolean logic (not, or, and, xor)
