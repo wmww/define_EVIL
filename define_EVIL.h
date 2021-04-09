@@ -131,12 +131,12 @@
 // only works if there is an ENABLE_EQ_*_* defined for the tokens
 // below EVIL_ENABLE_EQ is defined for booleans, void and empty values, generated.h has it defined for small numbers.
 #define EVIL_EQ(a_val, b_val) EVIL_IF_ELSE \
-    (EVIL_IS_THING(EVIL_EXPAND_CAT(EVIL_ENABLE_EQ_, EVIL_EXPAND_CAT(a_val, EVIL_EXPAND_CAT(_, a_val))))) \
+    (EVIL_IS_THING(EVIL_EXPAND_CAT(EVIL_ENABLE_EQ_, EVIL_EXPAND_CAT(b_val, EVIL_EXPAND_CAT(_, b_val))))) \
     (EVIL_EXPAND_CALL(EVIL_TO_STRING, You must define \
         EVIL_EXPAND_CAT( \
             EVIL_ENABLE_EQ_, EVIL_EXPAND_CAT( \
-                a_val, EVIL_EXPAND_CAT(_, a_val))) \
-        to use EVIL_EQ on a_val)) \
+                b_val, EVIL_EXPAND_CAT(_, b_val))) \
+        to use EVIL_EQ on b_val)) \
     (EVIL_NOT(EVIL_IS_THING(EVIL_EXPAND_CAT(EVIL_ENABLE_EQ_, EVIL_EXPAND_CAT(a_val, EVIL_EXPAND_CAT(_, b_val))))))
 
 // expands to TRUE if the two tokens are not equal (see EVIL_EQ)
@@ -175,6 +175,8 @@
 // EVIL_HAS_PEREN(())               -> TRUE
 // EVIL_HAS_PEREN((a, 6, "a"))      -> TRUE
 // EVIL_HAS_PEREN((a) (b))          -> FALSE
+// EVIL_HAS_PEREN(FN_MACRO)         -> FALSE
+// EVIL_HAS_PEREN((FN_MACRO))       -> TRUE
 // EVIL_HAS_PEREN((a) FN_MACRO)     -> <fails to compile>
 #define EVIL_HAS_PEREN(...) _EVIL_HAS_PEREN_C(EVIL_EXPAND(_EVIL_HAS_PEREN_A __VA_ARGS__))
 #define _EVIL_HAS_PEREN_A(...) _EVIL_HAS_PEREN_B
@@ -203,15 +205,28 @@
 // EVIL_CLOSURE_INVOKE((MACRO, a))          -> MACRO(a)
 // EVIL_CLOSURE_INVOKE((MACRO), x)          -> MACRO(x)
 // EVIL_CLOSURE_INVOKE((MACRO, a, b), x, y) -> MACRO(a, b, x, y)
-#define EVIL_CLOSURE_INVOKE(...) _EVIL_CLOSURE_INVOKE_EXPAND_CALL (\
-    _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(__VA_ARGS__), \
-        EVIL_EXPAND( \
-            _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(__VA_ARGS__) \
-            EVIL_IF_NOT(EVIL_OR( \
-                EVIL_EQ(EVIL_COUNT_AT_LEAST_1(__VA_ARGS__), 1), \
-                EVIL_EQ(EVIL_COUNT_AT_LEAST_1 _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(__VA_ARGS__), 1))) \
-            (,) \
-            _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS(__VA_ARGS__)))
+#define EVIL_CLOSURE_INVOKE(...) \
+    /* check that the closure is enclosed by parentheses */ \
+    /* (not doing this for closures with no captured values is an easy mistake) */ \
+    EVIL_IF_ELSE(EVIL_HAS_PEREN(_EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(__VA_ARGS__))) \
+    ( \
+        _EVIL_CLOSURE_INVOKE_EXPAND_CALL ( \
+            /* extract the closure, and from the closure extract the function-like macro at the start */ \
+            _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(__VA_ARGS__), \
+            EVIL_EXPAND( \
+                /* extract the closure, and from the closure extract it's captured values */ \
+                _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(__VA_ARGS__) \
+                /* if there are both captured values and arguments, we need a comma between them */ \
+                EVIL_IF_NOT(EVIL_OR( \
+                    EVIL_EQ(EVIL_COUNT_AT_LEAST_1(__VA_ARGS__), 1), \
+                    EVIL_EQ(EVIL_COUNT_AT_LEAST_1 _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(__VA_ARGS__), 1))) \
+                (,) \
+                /* extract the arguments */ \
+                _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS(__VA_ARGS__) \
+            ) \
+        ) \
+    ) \
+    ("Closures need to be enclosed by parentheses, dumbass")
 #define _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(first, ...) first
 #define _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS(macro, ...) __VA_ARGS__
 // everything blows up if we use the normal EXPAND_CALL here. We're probably somehow calling it recursivly
@@ -224,12 +239,19 @@
 #define EVIL_REPEAT(closure, count) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, count) \
     ((_EVIL_REPEAT_FUNC, closure), EVIL_ORDER_FORWARD, 0, EVIL_INC_,)
 // we have to duplicate EVIL_CLOSURE_INVOKE here because no recursion
-#define _EVIL_REPEAT_FUNC(closure, unused_item, index) _EVIL_REPEAT_FUNC_EXPAND_CALL (\
-    _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST closure, \
-        EVIL_EXPAND( \
-            _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS closure \
-            EVIL_IF_NOT(EVIL_EQ(EVIL_COUNT_AT_LEAST_1 closure, 1)) (,) \
-            index))
+#define _EVIL_REPEAT_FUNC(closure, unused_item, index) \
+    EVIL_IF_ELSE(EVIL_HAS_PEREN(closure)) \
+    ( \
+        _EVIL_REPEAT_FUNC_EXPAND_CALL ( \
+            _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST closure, \
+            EVIL_EXPAND( \
+                _EVIL_CLOSURE_INVOKE_EXTRACT_ARGS closure \
+                EVIL_IF_NOT(EVIL_EQ(EVIL_COUNT_AT_LEAST_1 closure, 1)) (,) \
+                index \
+            ) \
+        ) \
+    ) \
+    ("Closures need to be enclosed by parentheses, dumbass")
 #define _EVIL_REPEAT_FUNC_EXPAND_CALL(macro, ...) macro(__VA_ARGS__)
 
 // same as EVIL_REPEAT, but in reverse order

@@ -170,7 +170,7 @@ int main()
     TEST_CASE_MACRO(EVIL_EQ(void, void), TRUE);
     TEST_CASE_MACRO(EVIL_EQ(void, 0), FALSE);
     TEST_CASE_MACRO(EVIL_EQ(xyz, xyz), "You must define EVIL_ENABLE_EQ_xyz_xyz to use EVIL_EQ on xyz");
-    TEST_CASE_MACRO(EVIL_EQ(abc, xyz), "You must define EVIL_ENABLE_EQ_abc_abc to use EVIL_EQ on abc");
+    TEST_CASE_MACRO(EVIL_EQ(xyz, abc), "You must define EVIL_ENABLE_EQ_abc_abc to use EVIL_EQ on abc");
     printf("\n");
 
     printf("EVIL_NE:\n");
@@ -242,6 +242,7 @@ int main()
     TEST_CASE_MACRO(EVIL_REPEAT((ADD_T_DIVIDER), 0), );
     TEST_CASE_MACRO(EVIL_REPEAT((ADD_T_DIVIDER), 1), T_0);
     TEST_CASE_MACRO(EVIL_REPEAT((ADD_T_DIVIDER), 4), T_0 | T_1 | T_2 | T_3);
+    TEST_CASE_MACRO(EVIL_REPEAT(ADD_T, 1), "Closures need to be enclosed by parentheses, dumbass");
     printf("\n");
 
     printf("EVIL_REPEAT_DOWN:\n");
@@ -252,6 +253,7 @@ int main()
     TEST_CASE_MACRO(EVIL_REPEAT_DOWN((ADD_T_DIVIDER_DOWN), 1), T_0);
     TEST_CASE_MACRO(EVIL_REPEAT_DOWN((ADD_T_DIVIDER_DOWN), 4), T_3 | T_2 | T_1 | T_0);
     TEST_CASE_MACRO(EVIL_REPEAT_DOWN((TAKE_2, a), 3), [a, 2] [a, 1] [a, 0]);
+    TEST_CASE_MACRO(EVIL_REPEAT(ADD_T, 2), "Closures need to be enclosed by parentheses, dumbass" "Closures need to be enclosed by parentheses, dumbass");
     printf("\n");
 
     printf("EVIL_MAP:\n");
@@ -264,6 +266,8 @@ int main()
     TEST_CASE_MACRO(EVIL_MAP((DIVIDER), a, b, c, d), [a, 0] | [b, 1] | [c, 2] | [d, 3]);
     TEST_CASE_MACRO(EVIL_MAP((DIVIDER), a), [a, 0]);
     TEST_CASE_MACRO(EVIL_MAP((DIVIDER)), );
+    TEST_CASE_MACRO(EVIL_MAP(TAKE_2), ); // would expand to an error if there were any elements
+    TEST_CASE_MACRO(EVIL_MAP(TAKE_2, a), "Closures need to be enclosed by parentheses, dumbass");
     printf("\n");
 
     printf("EVIL_MAP_REVERSE:\n");
@@ -294,6 +298,7 @@ int main()
     TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN((DIVIDER_DOWN), a, b, c, d), [d, 3] | [c, 2] | [b, 1] | [a, 0]);
     TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN((DIVIDER_DOWN), a), [a, 0]);
     TEST_CASE_MACRO(EVIL_MAP_REVERSE_DOWN((DIVIDER_DOWN)), );
+    TEST_CASE_MACRO(EVIL_MAP(TAKE_1, a, b), "Closures need to be enclosed by parentheses, dumbass" "Closures need to be enclosed by parentheses, dumbass");
     printf("\n");
 
     printf("EVIL_COUNT:\n");
