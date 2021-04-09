@@ -194,12 +194,15 @@
     (EVIL_COUNT_AT_LEAST_1(__VA_ARGS__)) \
     (0)
 
-// a closure is a function-like macro followed by zero or more values, all surounded by parentheses.
-// when invoked, the captured arguments are followed by the given ones
-// EVIL_CLOSURE_INVOKE((MACRO))         -> MACRO()
-// EVIL_CLOSURE_INVOKE((MACRO, a, b))   -> MACRO(a, b)
-// EVIL_CLOSURE_INVOKE((MACRO), x, y)   -> MACRO(x, y)
-// EVIL_CLOSURE_INVOKE((MACRO, a), x)   -> MACRO(a, x)
+// a closure (sometimes called a lamda expression) is a chunk of functionality that can be passed around like data
+// what we're calling a closure here is a function-like macro be bundled with zero or more captured values
+// EVIL_CLOSURE_INVOKE() expands the contined macro with the captured values as well as zero or more additional arguments
+// the closure macro receives first the captured values, then the arguments supplied to EVIL_CLOSURE_INVOKE()
+// the closure macro and all captured values need to be surounded by parentheses
+// EVIL_CLOSURE_INVOKE((MACRO))             -> MACRO()
+// EVIL_CLOSURE_INVOKE((MACRO, a))          -> MACRO(a)
+// EVIL_CLOSURE_INVOKE((MACRO), x)          -> MACRO(x)
+// EVIL_CLOSURE_INVOKE((MACRO, a, b), x, y) -> MACRO(a, b, x, y)
 #define EVIL_CLOSURE_INVOKE(...) _EVIL_CLOSURE_INVOKE_EXPAND_CALL (\
     _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST _EVIL_CLOSURE_INVOKE_EXTRACT_FIRST(__VA_ARGS__), \
         EVIL_EXPAND( \
@@ -214,10 +217,10 @@
 // everything blows up if we use the normal EXPAND_CALL here. We're probably somehow calling it recursivly
 #define _EVIL_CLOSURE_INVOKE_EXPAND_CALL(macro, ...) macro(__VA_ARGS__)
 
-// repeats closure count number of times
-// closure is given the current index, see EVIL_CLOSURE_INVOKE for details
-// EVIL_REPEAT(FOO, 3)    -> FOO(0) FOO(1) FOO(2)
-// EVIL_REPEAT(FOO, 0)    -> [empty]
+// repeats closure count number of times (see EVIL_CLOSURE_INVOKE)
+// closure is invoked with the current index as it's argument (in addition to any captured values)
+// EVIL_REPEAT((FOO), 3)    -> FOO(0) FOO(1) FOO(2)
+// EVIL_REPEAT((FOO), 0)    -> [empty]
 #define EVIL_REPEAT(closure, count) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, count) \
     ((_EVIL_REPEAT_FUNC, closure), EVIL_ORDER_FORWARD, 0, EVIL_INC_,)
 // we have to duplicate EVIL_CLOSURE_INVOKE here because no recursion
@@ -230,28 +233,29 @@
 #define _EVIL_REPEAT_FUNC_EXPAND_CALL(macro, ...) macro(__VA_ARGS__)
 
 // same as EVIL_REPEAT, but in reverse order
-// EVIL_REPEAT(FOO, 3)    -> FOO(2) FOO(1) FOO(0)
+// EVIL_REPEAT_DOWN((FOO), 3)    -> FOO(2) FOO(1) FOO(0)
 #define EVIL_REPEAT_DOWN(closure, count) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, count) \
     ((_EVIL_REPEAT_FUNC, closure), EVIL_ORDER_FORWARD, EVIL_EXPAND_CAT(EVIL_DEC_, count), EVIL_DEC_,)
 
 // applies the given closure to all additional arguments
 // closure is given the item and the index, see EVIL_CLOSURE_INVOKE for details
-// EVIL_MAP(FOO, a, b, c)   -> FOO(a, 0) FOO(b, 1) FOO(c, 2)
+// EVIL_MAP((FOO), a, b, c)   -> FOO(a, 0) FOO(b, 1) FOO(c, 2)
 #define EVIL_MAP(closure, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
     (closure, EVIL_ORDER_FORWARD, 0, EVIL_INC_, __VA_ARGS__)
 
 // same as EVIL_MAP, but indexes count down instead of up
-// EVIL_MAP_DOWN(FOO, a, b, c)   -> FOO(a, 2) FOO(b, 1) FOO(c, 0)
+// EVIL_MAP_DOWN((FOO), a, b, c)   -> FOO(a, 2) FOO(b, 1) FOO(c, 0)
 #define EVIL_MAP_DOWN(closure, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
     (closure, EVIL_ORDER_FORWARD, EVIL_EXPAND_CAT(EVIL_DEC_, EVIL_COUNT(__VA_ARGS__)), EVIL_DEC_, __VA_ARGS__)
 
 // same as EVIL_MAP but reverses the order of the items
-// EVIL_MAP_REVERSE(FOO, a, b, c)   -> FOO(c, 0) FOO(b, 1) FOO(a, 2)
+// EVIL_MAP_REVERSE((FOO), a, b, c)   -> FOO(c, 0) FOO(b, 1) FOO(a, 2)
 #define EVIL_MAP_REVERSE(closure, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
     (closure, EVIL_ORDER_BACKWARD, EVIL_EXPAND_CAT(EVIL_DEC_, EVIL_COUNT(__VA_ARGS__)), EVIL_DEC_, __VA_ARGS__)
 
 // same as EVIL_MAP but reverses the order of items and counts down
-// EVIL_MAP_REVERSE_DOWN(FOO, a, b, c)   -> FOO(c, 2) FOO(b, 1) FOO(a, 0)
+// pairs the same indexes with the same items as EVIL_MAP()
+// EVIL_MAP_REVERSE_DOWN((FOO), a, b, c)   -> FOO(c, 2) FOO(b, 1) FOO(a, 0)
 #define EVIL_MAP_REVERSE_DOWN(closure, ...) EVIL_EXPAND_CAT(_EVIL_GEN_MAP_, EVIL_COUNT(__VA_ARGS__)) \
     (closure, EVIL_ORDER_BACKWARD, 0, EVIL_INC_, __VA_ARGS__)
 
