@@ -21,6 +21,8 @@
  * SOFTWARE.
  */
 
+// the upstream repository for define_EVIL is https://github.com/wmww/define_EVL
+
 #ifndef EVIL
 #define EVIL
 
